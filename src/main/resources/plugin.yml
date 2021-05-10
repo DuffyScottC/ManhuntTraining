@@ -1,0 +1,4 @@
+name: ManhuntTraining
+version: ${project.version}
+main: me.braekpo1nt.manhunttraining.Manhunttraining
+api-version: 1.16
