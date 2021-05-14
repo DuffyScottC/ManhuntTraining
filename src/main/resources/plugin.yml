@@ -1,4 +1,8 @@
 name: ManhuntTraining
 version: ${project.version}
-main: me.braekpo1nt.manhunttraining.Manhunttraining
+main: me.braekpo1nt.manhunttraining.Main
 api-version: 1.16
+
+commands: 
+  train:
+    description: The super command for ManhuntTraining

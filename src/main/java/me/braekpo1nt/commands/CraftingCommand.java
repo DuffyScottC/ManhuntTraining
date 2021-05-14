@@ -42,6 +42,7 @@ public class CraftingCommand implements CommandExecutor {
         ingredients.addAll(shaped.getIngredientMap().values());
         
         givePlayerIngredients(player, ingredients);
+        player.sendMessage("You must craft a " + goalMat.name());
         
         
         return true;
