@@ -2,13 +2,14 @@ package me.braekpo1nt.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TrainingCommandManager implements TabExecutor {
-    
-    
+/**
+ * The command Manager for the "train" command.
+ */
+public class TrainCommandManager implements CommandManager {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -17,6 +18,7 @@ public class TrainingCommandManager implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+        List<String> subCommandNames = new ArrayList<>(subCommands.keySet());
+        return subCommandNames;
     }
 }
