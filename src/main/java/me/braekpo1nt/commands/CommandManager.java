@@ -3,6 +3,7 @@ package me.braekpo1nt.commands;
 import me.braekpo1nt.commands.subcommands.SubCommand;
 import org.bukkit.command.TabExecutor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,6 +16,6 @@ public interface CommandManager extends TabExecutor {
     /**
      * Maps SubComands by their name. 
      */
-    Map<String, SubCommand> subCommands = null;
+    Map<String, SubCommand> subCommands = new HashMap<>();
     
 }
