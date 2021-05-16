@@ -5,18 +5,16 @@ import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class CraftingActivity implements Activity {
-    
+
     private Material goalType = null;
+    private List<ItemStack> goalIngredients;
     private Player player;
 
     /**
@@ -41,8 +39,8 @@ public class CraftingActivity implements Activity {
      */
     private void assignCraftingTask(Player player) {
         Recipe goalRecipe = getGoalRecipe();
-        List<ItemStack> ingredients = getIngredients(goalRecipe);
-        givePlayerIngredients(player, ingredients);
+        goalIngredients = getIngredients(goalRecipe);
+        givePlayerIngredients(player, goalIngredients);
         this.goalType = goalRecipe.getResult().getType();
         player.sendMessage("You must craft a " + goalRecipe.getResult().getType());
     }
@@ -89,12 +87,12 @@ public class CraftingActivity implements Activity {
 
     /**
      * Gives the list of ingredients to the player
-     * @param player The player to give the ingredients to
+     * @param inventoryHolder The InventoryHolder to give the ingredients to
      * @param ingredients The ingredients to give to the player
      */
-    public void givePlayerIngredients(Player player, List<ItemStack> ingredients) {
+    public void givePlayerIngredients(InventoryHolder inventoryHolder, List<ItemStack> ingredients) {
         for (ItemStack ingredient : ingredients) {
-            player.getInventory().addItem(ingredient);
+            inventoryHolder.getInventory().addItem(ingredient);
         }
     }
 
@@ -105,6 +103,10 @@ public class CraftingActivity implements Activity {
     }
 
     public Material getGoalType() {
-        return goalType;
+        return this.goalType;
+    }
+    
+    public List<ItemStack> getGoalIngredients() {
+        return this.goalIngredients;
     }
 }
