@@ -1,0 +1,14 @@
+package me.braekpo1nt.commands.interfaces;
+
+import org.bukkit.entity.Player;
+
+/**
+ * This interface is implemented by Activities. Each Activity is
+ * a thing to train on, to practice. 
+ */
+public interface Activity {
+    
+    void start(Player player);
+    void stop();
+    
+}

@@ -1,6 +1,6 @@
-package me.braekpo1nt.commands;
+package me.braekpo1nt.commands.interfaces;
 
-import me.braekpo1nt.commands.subcommands.SubCommand;
+import me.braekpo1nt.commands.interfaces.SubCommand;
 import org.bukkit.command.TabExecutor;
 
 import java.util.HashMap;

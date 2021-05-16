@@ -1,6 +1,8 @@
 package me.braekpo1nt.commands;
 
-import me.braekpo1nt.commands.subcommands.CraftingSubCommand;
+import me.braekpo1nt.commands.interfaces.CommandManager;
+import me.braekpo1nt.commands.subcommands.StartSubCommand;
+import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -12,8 +14,12 @@ import java.util.List;
  */
 public class TrainCommandManager implements CommandManager {
     
-    public TrainCommandManager() {
-        subCommands.put("craft", new CraftingSubCommand());
+    private Main plugin;
+    
+    public TrainCommandManager(Main plugin) {
+        this.plugin = plugin;
+        this.plugin.getCommand("train").setExecutor(this);
+        subCommands.put("start", new StartSubCommand(plugin));
     }
     
     @Override
