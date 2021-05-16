@@ -16,13 +16,15 @@ public class CraftingActivity implements Activity {
     private Material goalType = null;
     private List<ItemStack> goalIngredients;
     private Player player;
+    private final Main plugin;
 
     /**
      * Initializes the CraftingActivity. Includes registering event listeners.
      * @param plugin
      */
     public CraftingActivity(Main plugin) {
-        plugin.getServer().getPluginManager().registerEvents(new CraftingListener(this), plugin);
+        this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(new CraftingListener(this, plugin), plugin);
     }
 
     
@@ -84,22 +86,27 @@ public class CraftingActivity implements Activity {
         }
         return ingredients;
     }
-
+    
     /**
      * Gives the list of ingredients to the player
-     * @param inventoryHolder The InventoryHolder to give the ingredients to
+     * @param player The InventoryHolder to give the ingredients to
      * @param ingredients The ingredients to give to the player
      */
-    public void givePlayerIngredients(InventoryHolder inventoryHolder, List<ItemStack> ingredients) {
+    public void givePlayerIngredients(Player player, List<ItemStack> ingredients) {
         for (ItemStack ingredient : ingredients) {
-            inventoryHolder.getInventory().addItem(ingredient);
+            player.getInventory().addItem(ingredient);
         }
     }
 
     @Override
     public void stop() {
         this.goalType = null;
-        this.player.getInventory().clear();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(CraftingActivity.this.plugin, new Runnable() {
+            @Override
+            public void run() {
+                CraftingActivity.this.player.getInventory().clear();
+            }
+        }, 1L);
     }
 
     public Material getGoalType() {
