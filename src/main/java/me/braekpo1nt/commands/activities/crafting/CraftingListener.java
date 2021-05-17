@@ -25,8 +25,7 @@ public class CraftingListener implements Listener {
     public void craftingListener(CraftItemEvent event) {
         if (craftingActivity.getGoalType() != null) {
             if (event.getCurrentItem().getType().equals(craftingActivity.getGoalType())) {
-                event.getWhoClicked().sendMessage("Success!");
-                craftingActivity.stop();
+                craftingActivity.craftSuccess();
             } else {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                     @Override

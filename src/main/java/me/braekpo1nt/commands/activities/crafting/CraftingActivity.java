@@ -17,6 +17,7 @@ public class CraftingActivity implements Activity {
     private List<ItemStack> goalIngredients;
     private Player player;
     private final Main plugin;
+    private long stopwatchStart;
 
     /**
      * Initializes the CraftingActivity. Includes registering event listeners.
@@ -32,6 +33,16 @@ public class CraftingActivity implements Activity {
     public void start(Player player) {
         this.player = player;
         assignCraftingTask(player);
+        startStopwatch();
+    }
+    
+    
+    private void startStopwatch() {
+        this.stopwatchStart = System.currentTimeMillis();
+    }
+    
+    private long stopStopwatch() {
+        return System.currentTimeMillis() - this.stopwatchStart;
     }
 
     /**
@@ -97,9 +108,9 @@ public class CraftingActivity implements Activity {
             player.getInventory().addItem(ingredient);
         }
     }
-
-    @Override
-    public void stop() {
+    
+    public void craftSuccess() {
+        this.player.sendMessage("Success! " + Double.toString((double) stopStopwatch() / 1000.0) + " seconds.");
         this.goalType = null;
         Bukkit.getScheduler().scheduleSyncDelayedTask(CraftingActivity.this.plugin, new Runnable() {
             @Override
@@ -107,6 +118,13 @@ public class CraftingActivity implements Activity {
                 CraftingActivity.this.player.getInventory().clear();
             }
         }, 1L);
+        this.stopwatchStart = System.currentTimeMillis();
+        
+    }
+
+    @Override
+    public void stop() {
+        this.player.getInventory().clear();
     }
 
     public Material getGoalType() {
