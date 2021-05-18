@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
+import org.bukkit.util.BoundingBox;
 
 public class SpeedBridgeActivity implements Activity {
     
@@ -17,9 +18,19 @@ public class SpeedBridgeActivity implements Activity {
      * True if this activity is active, false if not.
      */
     private boolean isActive = false;
+    /**
+     * The location the player should start at
+     */
+    private BlockVector startLocation = new BlockVector(162, 93, -167);
+    private BoundingBox bridgeArea;
+    
     
     public SpeedBridgeActivity(Main plugin) {
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
+        
+        BlockVector start = new BlockVector(165, 92, -166);
+        BlockVector end = new BlockVector(159, 92, -157);
+        this.bridgeArea = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
     }
     
     @Override
@@ -28,7 +39,7 @@ public class SpeedBridgeActivity implements Activity {
         teleportPlayerToStart();
         resetBridgeArea();
         clearPlayersInventory();
-        this.player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 64));
+        givePlayerBridgeBlocks();
         this.isActive = true;
         this.player.sendMessage("Start speed bridging!");
     }
@@ -37,23 +48,17 @@ public class SpeedBridgeActivity implements Activity {
     public boolean isActive() {
         return this.isActive;
     }
-
+    
     private void teleportPlayerToStart() {
-        Location speedBridgeLocation = new Location(this.player.getWorld(), 162, 93, -167, 0, 0);
-        this.player.sendMessage("Teleporting you to speed bridge location: " + speedBridgeLocation.toVector());
-        this.player.teleport(speedBridgeLocation);
+        this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation);
+        this.player.teleport(startLocation.toLocation(this.player.getWorld()));
     } 
     
     private void resetBridgeArea() {
-        BlockVector a = new BlockVector(165, 92, -166);
-        BlockVector b = new BlockVector(159, 92, -157);
-        BlockVector start = new BlockVector(Math.min(a.getBlockX(), b.getBlockX()), Math.min(a.getBlockY(), b.getBlockY()), Math.min(a.getBlockZ(), b.getBlockZ()));
-        BlockVector end = new BlockVector(Math.max(a.getBlockX(), b.getBlockX()), Math.max(a.getBlockY(), b.getBlockY()), Math.max(a.getBlockZ(), b.getBlockZ()));
-        
-        this.player.sendMessage("Resetting bridge area from " + a + " to " + b + ".");
-        for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-            for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
+        this.player.sendMessage("Resetting bridge area.");
+        for (int x = bridgeArea.getMin().getBlockX(); x <= bridgeArea.getMax().getBlockX(); x++) {
+            for (int y = bridgeArea.getMin().getBlockY(); y <= bridgeArea.getMax().getBlockY(); y++) {
+                for (int z = bridgeArea.getMin().getBlockZ(); z <= bridgeArea.getMax().getBlockZ(); z++) {
                     this.player.getWorld().getBlockAt(new Location(this.player.getWorld(), x, y, z)).setType(Material.AIR);
                 }
             }
@@ -71,13 +76,19 @@ public class SpeedBridgeActivity implements Activity {
         this.player.getInventory().clear();
     }
 
-    public int getHeightLimit() {
-        return this.heightLimit;
+    private void givePlayerBridgeBlocks() {
+        this.player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 64));
+    }
+    
+    private void resetPlayersInventory() {
+        clearPlayersInventory();
+        givePlayerBridgeBlocks();
     }
 
     public void onFallBelowHeight() {
         teleportPlayerToStart();
         resetBridgeArea();
+        resetPlayersInventory();
     }
     
     public boolean playerHasFallen() {
