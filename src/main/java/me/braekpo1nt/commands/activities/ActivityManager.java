@@ -24,7 +24,7 @@ public class ActivityManager {
         Add new activities here, pairing them with their name.
          */
         activities.put("craft", new CraftingActivity(plugin));
-        activities.put("speedbridge", new SpeedBridgeActivity());
+        activities.put("speedbridge", new SpeedBridgeActivity(plugin));
     }
 
     /**
