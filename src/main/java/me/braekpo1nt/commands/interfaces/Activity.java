@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 public interface Activity {
     
     void start(Player player);
+    boolean isActive();
     void stop();
     
 }

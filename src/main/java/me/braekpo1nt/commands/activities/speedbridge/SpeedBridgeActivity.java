@@ -7,21 +7,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
 
 public class SpeedBridgeActivity implements Activity {
     
     private int heightLimit = 92;
     private int finishLine = -157;
     private Player player;
-    private boolean speedBridging = false;
+    /**
+     * True if this activity is active, false if not.
+     */
+    private boolean isActive = false;
     
     public SpeedBridgeActivity(Main plugin) {
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
-    }
-    
-    public boolean isSpeedBridging() {
-        return this.speedBridging;
     }
     
     @Override
@@ -31,15 +29,20 @@ public class SpeedBridgeActivity implements Activity {
         resetBridgeArea();
         this.player.getInventory().clear();
         this.player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 64));
-        this.speedBridging = true;
+        this.isActive = true;
         this.player.sendMessage("Start speed bridging!");
     }
-    
+
+    @Override
+    public boolean isActive() {
+        return this.isActive;
+    }
+
     private void teleportPlayerToStart() {
         Location speedBridgeLocation = new Location(this.player.getWorld(), 162, 93, -167, 0, 0);
         this.player.sendMessage("Teleporting you to speed bridge location: " + speedBridgeLocation.toVector());
         this.player.teleport(speedBridgeLocation);
-    }
+    } 
     
     private void resetBridgeArea() {
         BlockVector a = new BlockVector(165, 92, -166);
@@ -59,7 +62,8 @@ public class SpeedBridgeActivity implements Activity {
     
     @Override
     public void stop() {
-        this.speedBridging = false;
+        resetBridgeArea();
+        this.isActive = false;
     }
 
     public int getHeightLimit() {

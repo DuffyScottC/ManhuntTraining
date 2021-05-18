@@ -15,7 +15,7 @@ public class SpeedBridgeListener implements Listener {
     
     @EventHandler
     public void fallListener(PlayerMoveEvent event) {
-        if (speedBridgeActivity.isSpeedBridging()) {
+        if (speedBridgeActivity.isActive()) {
             if (speedBridgeActivity.playerHasFallen()) {
                 speedBridgeActivity.onFallBelowHeight();
                 return;

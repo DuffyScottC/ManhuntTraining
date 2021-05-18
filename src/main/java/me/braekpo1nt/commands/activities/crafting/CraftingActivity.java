@@ -18,6 +18,7 @@ public class CraftingActivity implements Activity {
     private Player player;
     private final Main plugin;
     private long stopwatchStart;
+    private boolean isActive;
 
     /**
      * Initializes the CraftingActivity. Includes registering event listeners.
@@ -31,12 +32,18 @@ public class CraftingActivity implements Activity {
     
     @Override
     public void start(Player player) {
+        this.isActive = true;
         this.player = player;
         assignCraftingTask(player);
         startStopwatch();
     }
-    
-    
+
+    @Override
+    public boolean isActive() {
+        return this.isActive;
+    }
+
+
     private void startStopwatch() {
         this.stopwatchStart = System.currentTimeMillis();
     }
@@ -121,10 +128,11 @@ public class CraftingActivity implements Activity {
         this.stopwatchStart = System.currentTimeMillis();
         
     }
-
+    
     @Override
     public void stop() {
         this.player.getInventory().clear();
+        this.isActive = false;
     }
 
     public Material getGoalType() {
