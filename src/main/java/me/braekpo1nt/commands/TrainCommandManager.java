@@ -1,12 +1,16 @@
 package me.braekpo1nt.commands;
 
+import me.braekpo1nt.commands.activities.ActivityManager;
 import me.braekpo1nt.commands.interfaces.CommandManager;
+import me.braekpo1nt.commands.interfaces.SubCommand;
+import me.braekpo1nt.commands.interfaces.SubTabCommand;
 import me.braekpo1nt.commands.subcommands.StartSubCommand;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,7 +18,7 @@ import java.util.List;
  */
 public class TrainCommandManager implements CommandManager {
     
-    private Main plugin;
+    private final Main plugin;
     
     public TrainCommandManager(Main plugin) {
         this.plugin = plugin;
@@ -34,7 +38,7 @@ public class TrainCommandManager implements CommandManager {
             return false;
         }
         
-        return subCommands.get(args[0]).onCommand(sender, command, label, args);
+        return subCommands.get(args[0]).onCommand(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
     }
 
     /**
@@ -47,7 +51,22 @@ public class TrainCommandManager implements CommandManager {
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> subCommandNames = new ArrayList<>(subCommands.keySet());
-        return subCommandNames;
+        if (args.length == 1) {
+            List<String> subCommandNames = new ArrayList<>(subCommands.keySet());
+            return subCommandNames;
+        } else if (args.length == 2) {
+            // return the arguments of the subcommand, if any exist
+            if (subCommands.containsKey(args[0])) {
+                SubCommand subCommand = subCommands.get(args[0]);
+                if (subCommand instanceof SubTabCommand) {
+                    SubTabCommand subTabCommand = (SubTabCommand) subCommand;
+                    return subTabCommand.onTabComplete(sender, command, alias, Arrays.copyOfRange(args, 1, args.length));
+                }
+            } else {
+                return null;
+            }
+        }
+        
+        return null;
     }
 }
