@@ -27,7 +27,7 @@ public class SpeedBridgeActivity implements Activity {
         this.player = player;
         teleportPlayerToStart();
         resetBridgeArea();
-        this.player.getInventory().clear();
+        clearPlayersInventory();
         this.player.getInventory().addItem(new ItemStack(Material.OAK_PLANKS, 64));
         this.isActive = true;
         this.player.sendMessage("Start speed bridging!");
@@ -63,7 +63,12 @@ public class SpeedBridgeActivity implements Activity {
     @Override
     public void stop() {
         resetBridgeArea();
+        clearPlayersInventory();
         this.isActive = false;
+    }
+
+    private void clearPlayersInventory() {
+        this.player.getInventory().clear();
     }
 
     public int getHeightLimit() {
