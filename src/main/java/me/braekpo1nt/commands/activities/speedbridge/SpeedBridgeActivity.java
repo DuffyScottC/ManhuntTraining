@@ -68,7 +68,7 @@ public class SpeedBridgeActivity implements Activity {
         StringBuilder s = new StringBuilder();
         for (String arg : args) {
             s.append(arg);
-            s.append(",");9
+            s.append(",");
         }
         sender.sendMessage(s.toString());
     }
