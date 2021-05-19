@@ -2,12 +2,19 @@ package me.braekpo1nt.commands.activities.speedbridge;
 
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SpeedBridgeActivity implements Activity {
     
@@ -48,7 +55,69 @@ public class SpeedBridgeActivity implements Activity {
     public boolean isActive() {
         return this.isActive;
     }
-    
+
+    @Override
+    public void stop() {
+        resetBridgeArea();
+        clearPlayersInventory();
+        this.isActive = false;
+    }
+
+    @Override
+    public void configure(CommandSender sender, String[] args) {
+        StringBuilder s = new StringBuilder();
+        for (String arg : args) {
+            s.append(arg);
+            s.append(",");9
+        }
+        sender.sendMessage(s.toString());
+    }
+
+    @Override
+    public List<String> onConfigureTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> options = new ArrayList<>();
+            options.add("setBuildArea");
+            return options;
+        } else if (args.length > 1) {
+            if (args[0].equals("setBuildArea")) {
+                if (args.length > 1) {
+                    Player player = (Player) sender;
+                    Block targetBlock = player.getTargetBlockExact(10);
+                    // if the player is not targeting a block
+                    if (targetBlock == null) {
+                        return Arrays.asList("~");
+                    } else {
+                        // if the player is targeting a block
+                        List<String> coords = new ArrayList<>();
+                        switch (args.length) {
+                            case 2:
+                            case 5:
+                                coords.add(Integer.toString(targetBlock.getLocation().getBlockX()));
+                                return coords;
+                            case 3:
+                            case 6:
+                                coords.add(Integer.toString(targetBlock.getLocation().getBlockY()));
+                                return coords;
+                            case 4:
+                            case 7:
+                                coords.add(Integer.toString(targetBlock.getLocation().getBlockZ()));
+                                return coords;
+                            default:
+                                return null;
+                        }
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     private void teleportPlayerToStart() {
         this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation);
         this.player.teleport(startLocation.toLocation(this.player.getWorld()));
@@ -63,13 +132,6 @@ public class SpeedBridgeActivity implements Activity {
                 }
             }
         }
-    }
-    
-    @Override
-    public void stop() {
-        resetBridgeArea();
-        clearPlayersInventory();
-        this.isActive = false;
     }
 
     private void clearPlayersInventory() {

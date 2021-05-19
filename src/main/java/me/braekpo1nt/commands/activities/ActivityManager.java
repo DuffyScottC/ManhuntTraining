@@ -5,6 +5,7 @@ import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -52,11 +53,28 @@ public class ActivityManager {
         return this.activities.containsKey(activityName);
     }
 
+    /**
+     * Starts the given Activity.
+     * @param activityName The name of the activity to start
+     * @param player The player to pass to the activity
+     */
     public void startActivity(String activityName, Player player) {
         if (!activities.containsKey(activityName)) {
             player.sendMessage("Activity with name \"" + activityName + "\" could not be found.");
             return;
         }
         activities.get(activityName).start(player);
+    }
+
+    /**
+     * Configures the given Activity.
+     * @param activityName The name of the Activity to configure
+     * @param args The args to configure the activity 
+     */
+    public void configureActivity(CommandSender sender, String activityName, String[] args) {
+        if (activities.containsKey(activityName)) {
+            Bukkit.getLogger().info("Configuring " + activityName);
+            activities.get(activityName).configure(sender, args);
+        }
     }
 }

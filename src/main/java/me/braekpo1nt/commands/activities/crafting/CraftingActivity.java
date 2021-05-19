@@ -4,6 +4,9 @@ import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 
@@ -29,7 +32,16 @@ public class CraftingActivity implements Activity {
         plugin.getServer().getPluginManager().registerEvents(new CraftingListener(this, plugin), plugin);
     }
 
-    
+    @Override
+    public void configure(CommandSender sender, String[] args) {
+        
+    }
+
+    @Override
+    public List<String> onConfigureTabComplete(CommandSender sender, String[] args) {
+        return null;
+    }
+
     @Override
     public void start(Player player) {
         this.isActive = true;

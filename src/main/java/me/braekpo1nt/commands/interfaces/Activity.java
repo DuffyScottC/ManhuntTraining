@@ -1,6 +1,9 @@
 package me.braekpo1nt.commands.interfaces;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * This interface is implemented by Activities. Each Activity is
@@ -14,5 +17,14 @@ public interface Activity {
     void start(Player player);
     boolean isActive();
     void stop();
+
+    /**
+     * Allows the user to configure the Activity with passed
+     * in arguments.
+     * @param args The command line arguments to use for
+     *             configuration.
+     */
+    void configure(CommandSender sender, String[] args);
     
+    List<String> onConfigureTabComplete(CommandSender sender, String[] args);
 }

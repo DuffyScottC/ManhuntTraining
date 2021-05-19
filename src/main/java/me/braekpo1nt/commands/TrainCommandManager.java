@@ -4,8 +4,10 @@ import me.braekpo1nt.commands.activities.ActivityManager;
 import me.braekpo1nt.commands.interfaces.CommandManager;
 import me.braekpo1nt.commands.interfaces.SubCommand;
 import me.braekpo1nt.commands.interfaces.SubTabCommand;
+import me.braekpo1nt.commands.subcommands.OptSubCommand;
 import me.braekpo1nt.commands.subcommands.StartSubCommand;
 import me.braekpo1nt.manhunttraining.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -24,6 +26,7 @@ public class TrainCommandManager implements CommandManager {
         this.plugin = plugin;
         this.plugin.getCommand("train").setExecutor(this);
         subCommands.put("start", new StartSubCommand(plugin));
+        subCommands.put("opt", new OptSubCommand(plugin));
     }
     
     @Override
@@ -54,7 +57,7 @@ public class TrainCommandManager implements CommandManager {
         if (args.length == 1) {
             List<String> subCommandNames = new ArrayList<>(subCommands.keySet());
             return subCommandNames;
-        } else if (args.length == 2) {
+        } else if (args.length > 1) {
             // return the arguments of the subcommand, if any exist
             if (subCommands.containsKey(args[0])) {
                 SubCommand subCommand = subCommands.get(args[0]);
