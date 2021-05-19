@@ -2,6 +2,7 @@ package me.braekpo1nt.commands.activities.speedbridge.configurers;
 
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
+import me.braekpo1nt.manhunttraining.Main;
 import me.braekpo1nt.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,15 +10,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockVector;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class BridgeStartLocationConfigurer implements ActivityConfigurer {
     
-    SpeedBridgeActivity speedBridgeActivity;
+    Main plugin;
     
-    public BridgeStartLocationConfigurer(SpeedBridgeActivity speedBridgeActivity) {
-        this.speedBridgeActivity = speedBridgeActivity;
+    public BridgeStartLocationConfigurer(Main plugin) {
+        this.plugin = plugin;
     }
     
     @Override
@@ -29,7 +29,8 @@ public class BridgeStartLocationConfigurer implements ActivityConfigurer {
                 sender.sendMessage("Please provide a valid location.");
                 return false;
             }
-            speedBridgeActivity.setStartLocation(startLocation);
+            plugin.getConfig().set(SpeedBridgeActivity.START_LOCATION, startLocation);
+            plugin.saveConfig();
             sender.sendMessage("Start location set.");
             return true;
         } else {

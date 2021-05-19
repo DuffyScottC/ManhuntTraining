@@ -2,21 +2,23 @@ package me.braekpo1nt.commands.activities.speedbridge.configurers;
 
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
+import me.braekpo1nt.manhunttraining.Main;
 import me.braekpo1nt.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockVector;
+import org.bukkit.util.BoundingBox;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class BridgeAreaConfigurer implements ActivityConfigurer {
     
-    private SpeedBridgeActivity speedBridgeActivity;
+    private Main plugin;
     
-    public BridgeAreaConfigurer(SpeedBridgeActivity speedBridgeActivity) {
-        this.speedBridgeActivity = speedBridgeActivity;
+    public BridgeAreaConfigurer(Main plugin) {
+        this.plugin = plugin;
     }
     
     @Override
@@ -28,7 +30,12 @@ public class BridgeAreaConfigurer implements ActivityConfigurer {
                 sender.sendMessage("Please provide a valid block location");
                 return false;
             }
-            speedBridgeActivity.setBridgeArea(start, end);
+
+            BoundingBox bridgeArea = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
+            
+            plugin.getConfig().set(SpeedBridgeActivity.BRIDGE_AREA, bridgeArea);
+            plugin.saveConfig();
+            
             sender.sendMessage("Bridge area set.");
             return true;
 

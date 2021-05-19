@@ -12,6 +12,7 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         activityManager = new ActivityManager(this);
         new TrainCommandManager(this);
+        this.saveDefaultConfig();
     }
 
     public ActivityManager getActivityManager() {

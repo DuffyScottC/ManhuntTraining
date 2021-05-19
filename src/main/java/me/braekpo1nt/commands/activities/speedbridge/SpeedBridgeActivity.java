@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -22,7 +23,11 @@ import java.util.List;
 
 public class SpeedBridgeActivity implements Activity {
     
-    private int heightLimit = 92;
+    public static final String START_LOCATION = "start-location";
+    public static final String BRIDGE_AREA = "bridge-area";
+    
+    private final Main plugin;
+    private int heightLimit = 0;
     private int finishLine = -157;
     private Player player;
     /**
@@ -37,31 +42,29 @@ public class SpeedBridgeActivity implements Activity {
     
     
     public SpeedBridgeActivity(Main plugin) {
+        this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
         
         // Add new ActivityConfigurer objects here
-        configurers.put("bridgearea", new BridgeAreaConfigurer(this));
-        configurers.put("startlocation", new BridgeStartLocationConfigurer(this));
-    }
-    
-    public void setBridgeArea(BlockVector start, BlockVector end) {
-        this.bridgeArea = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
-    }
-
-    public void setStartLocation(BlockVector startLocation) {
-        this.startLocation = startLocation;
+        configurers.put("bridgearea", new BridgeAreaConfigurer(plugin));
+        configurers.put("startlocation", new BridgeStartLocationConfigurer(plugin));
     }
     
     @Override
     public void start(Player player) {
-        if (startLocation == null) {
+        Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
+        if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
             return;
         }
-        if (bridgeArea == null) {
+        this.startLocation = (BlockVector) startLocationConf;
+        Object bridgeAreaConf = plugin.getConfig().get(this.BRIDGE_AREA);
+        if (bridgeAreaConf == null || !(bridgeAreaConf instanceof BoundingBox)) {
             player.sendMessage("Bridge area has not been set.");
             return;
         }
+        this.bridgeArea = (BoundingBox) bridgeAreaConf; 
+        heightLimit = (int) bridgeArea.getMinY();
         this.player = player;
         teleportPlayerToStart();
         resetBridgeArea();
@@ -114,8 +117,8 @@ public class SpeedBridgeActivity implements Activity {
     }
 
     private void teleportPlayerToStart() {
-        this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation.toLocation(this.player.getWorld()));
-        this.player.teleport(startLocation.toLocation(this.player.getWorld()));
+        this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation);
+        this.player.teleport(startLocation.toLocation(this.player.getWorld(), player.getLocation().getYaw(), player.getLocation().getPitch()));
     }
     
     private void resetBridgeArea() {
