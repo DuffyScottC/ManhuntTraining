@@ -1,5 +1,6 @@
 package me.braekpo1nt.commands.interfaces;
 
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,7 +25,7 @@ public interface Activity {
      * @param args The command line arguments to use for
      *             configuration.
      */
-    void configure(CommandSender sender, String[] args);
+    boolean configure(CommandSender sender, Command command, String label, String[] args);
     
     List<String> onConfigureTabComplete(CommandSender sender, String[] args);
 }

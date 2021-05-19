@@ -29,7 +29,7 @@ public class OptSubCommand implements SubTabCommand {
                 sender.sendMessage("Activity \"" + args[0] + "\" does not exist. Please provide a valid activity to configure.");
                 return false;
             } else {
-                plugin.getActivityManager().configureActivity(sender, args[0], Arrays.copyOfRange(args, 1, args.length));
+                plugin.getActivityManager().configureActivity(sender, command, label, Arrays.copyOfRange(args, 1, args.length), args[0]);
             }
         }
         return false;

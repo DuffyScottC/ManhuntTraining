@@ -33,8 +33,8 @@ public class CraftingActivity implements Activity {
     }
 
     @Override
-    public void configure(CommandSender sender, String[] args) {
-        
+    public boolean configure(CommandSender sender, Command command, String label, String[] args) {
+        return false;
     }
 
     @Override

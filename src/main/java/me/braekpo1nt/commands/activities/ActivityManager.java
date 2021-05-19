@@ -5,6 +5,7 @@ import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -71,10 +72,10 @@ public class ActivityManager {
      * @param activityName The name of the Activity to configure
      * @param args The args to configure the activity 
      */
-    public void configureActivity(CommandSender sender, String activityName, String[] args) {
+    public void configureActivity(CommandSender sender, Command command, String label, String[] args, String activityName) {
         if (activities.containsKey(activityName)) {
             Bukkit.getLogger().info("Configuring " + activityName);
-            activities.get(activityName).configure(sender, args);
+            activities.get(activityName).configure(sender, command, label, args);
         }
     }
 }
