@@ -1,8 +1,9 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
+import me.braekpo1nt.commands.activities.speedbridge.configurers.BridgeAreaConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
-import org.bukkit.Bukkit;
+import me.braekpo1nt.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +37,9 @@ public class SpeedBridgeActivity implements Activity {
     
     public SpeedBridgeActivity(Main plugin) {
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
+        
+        // Add new ActivityConfigurer objects here
+        configurers.put("bridgearea", new BridgeAreaConfigurer(this));
         
         BlockVector start = new BlockVector(165, 92, -166);
         BlockVector end = new BlockVector(159, 92, -157);
@@ -63,50 +68,12 @@ public class SpeedBridgeActivity implements Activity {
         clearPlayersInventory();
         this.isActive = false;
     }
-
+    
     @Override
     public boolean configure(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
-            if (args[0].equals("buildarea")) {
-                if (args.length == 7) {
-                    int[] coords = new int[6];
-                    for (int i = 1; i < 7; i++) {
-                        if (args[i].matches("^~-?\\d*\\.?\\d*$")) {
-                            double offset = 0.0;
-                            if (args[i].length() > 1) {
-                                try {
-                                    String offsetString = args[i].substring(1);
-                                    offset = Double.parseDouble(offsetString);
-                                } catch (NumberFormatException ex) {
-                                    sender.sendMessage("Must provide two valid block locations. \"" + args[i] + "\" is not a valid coordinate.");
-                                    return false;
-                                }
-                            }
-                            if (sender instanceof Player) {
-                                Player playerSender = (Player) sender;
-                                coords[i-1] = getRelativeCoordinate(playerSender, offset, (i-1) % 3);
-                            }
-                        } else {
-                            try {
-                               coords[i-1] =  Integer.parseInt(args[i]);
-                            } catch (NumberFormatException ex) {
-                                sender.sendMessage("Must provide two valid block locations. \"" + args[i] + "\" is not a valid coordinate.");
-                                return false;
-                            }
-                        }
-                    }
-                    
-                    StringBuilder s = new StringBuilder();
-                    for (int coord : coords) {
-                        s.append(coord);
-                        s.append(",");
-                    }
-                    sender.sendMessage(s.toString());
-                    
-                } else {
-                    sender.sendMessage("Must provide two valid block locations.");
-                    return false;
-                }
+            if (configurers.containsKey(args[0])) {
+                return configurers.get(args[0]).onConfigure(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
             } else {
                 sender.sendMessage("Provide a valid option. \"" + args[0] + "\" is not a recognized option.");
                 return false;
@@ -115,90 +82,20 @@ public class SpeedBridgeActivity implements Activity {
             sender.sendMessage("Please provide a valid option argument.");
             return false;
         }
-        return false;
     }
 
     @Override
-    public List<String> onConfigureTabComplete(CommandSender sender, String[] args) {
+    public List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            List<String> options = new ArrayList<>();
-            options.add("buildarea");
-            return options;
+            return new ArrayList<>(configurers.keySet());
         } else if (args.length > 1) {
-            if (args[0].equals("buildarea")) {
-                if (2 <= args.length && args.length <= 4) {
-                    return Arrays.asList(getCoordTabComplete(sender, args.length - 2));
-                } else if (5 <= args.length && args.length <= 7) {
-                    return Arrays.asList(getCoordTabComplete(sender, args.length - 5));
-                } else {
-                    return null;
-                }
+            if (configurers.containsKey(args[0])) {
+                return configurers.get(args[0]).onTabComplete(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
             } else {
                 return null;
             }
         } else {
             return null;
-        }
-    }
-
-    /**
-     * Returns the relative coordinate position of the given Player given
-     * an offset. Returns x, y, or z if argPosition is 0, 1, or 2, respectively.
-     * 
-     * @param playerSender
-     * @param argPosition
-     * @return The x, y, or z coordinate of the player plus the given offset (rounded
-     * to an int) if the argPosition is 0, 1, or 2, respectively. If the argPosition is
-     * not 0, 1, or 2, returns the offset rounded to the nearest int. 
-     */
-    private int getRelativeCoordinate(Player playerSender, double offset, int argPosition) {
-        Location loc = playerSender.getLocation();
-        int intOffset = (int) Math.round(offset);
-        switch (argPosition) {
-            case 0:
-                return loc.getBlockX() + intOffset;
-            case 1:
-                return loc.getBlockY() + intOffset;
-            case 2:
-                return loc.getBlockZ() + intOffset;
-            default:
-                return intOffset;
-        }
-    }
-
-    /**
-     * Returns returns the x, y, or z coordinate of the block the sender
-     * is looking at if the argPosition is 0, 1, or 2 respectively.
-     * If the sender is not looking at a block, returns "~".
-     * If the sender is not a player, will return "0".
-     * @param sender The sender of the command
-     * @param argPosition The position of the coordinate component to return
-     * @return x, y, or z coordinate if the argPosition is 0, 1, or 2 respectively.
-     * If the sender is not a Player, the sender is not looking at a block in a range 
-     * of 10 blocks, or the argPosition is not 0, 1, or 2, 
-     * "~" is returned.
-     */
-    private String getCoordTabComplete(CommandSender sender, int argPosition) {
-        if (!(sender instanceof Player)) {
-            return "0";
-        }
-        Player player = (Player) sender;
-        Block targetBlock = player.getTargetBlockExact(10);
-        // if the player is not targeting a block
-        if (targetBlock == null) {
-            return "~";
-        } else {
-            // if the player is targeting a block
-            switch (argPosition) {
-                case 0:
-                    return Integer.toString(targetBlock.getLocation().getBlockX());
-                case 1:
-                    return Integer.toString(targetBlock.getLocation().getBlockY());
-                case 2:
-                    return Integer.toString(targetBlock.getLocation().getBlockZ());
-                default:
-                    return "~";
-            }
         }
     }
 

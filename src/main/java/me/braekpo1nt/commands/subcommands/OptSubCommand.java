@@ -41,7 +41,7 @@ public class OptSubCommand implements SubTabCommand {
             return new ArrayList<>(this.plugin.getActivityManager().getActivities().keySet());
         } else if (args.length > 1) {
             if (this.plugin.getActivityManager().hasActivity(args[0])) {
-                return this.plugin.getActivityManager().getActivities().get(args[0]).onConfigureTabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
+                return this.plugin.getActivityManager().getActivities().get(args[0]).onConfigureTabComplete(sender, command, alias, Arrays.copyOfRange(args, 1, args.length));
             } else {
                 return null;
             }

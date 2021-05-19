@@ -22,7 +22,7 @@ public class CraftingActivity implements Activity {
     private final Main plugin;
     private long stopwatchStart;
     private boolean isActive;
-
+    
     /**
      * Initializes the CraftingActivity. Includes registering event listeners.
      * @param plugin
@@ -38,7 +38,7 @@ public class CraftingActivity implements Activity {
     }
 
     @Override
-    public List<String> onConfigureTabComplete(CommandSender sender, String[] args) {
+    public List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args) {
         return null;
     }
 

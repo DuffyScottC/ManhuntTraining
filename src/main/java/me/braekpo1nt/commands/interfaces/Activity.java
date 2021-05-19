@@ -4,7 +4,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface is implemented by Activities. Each Activity is
@@ -14,6 +16,14 @@ import java.util.List;
  * add it to the ActivityManager
  */
 public interface Activity {
+
+    /**
+     * A map of {@link ActivityConfigurer}s for this {@link Activity}.
+     * Maps configurer option names to their classes.
+     * Add {@link ActivityConfigurer}s to this list to enable the
+     * configuration of this activity.
+     */
+    Map<String, ActivityConfigurer> configurers = new HashMap<>();
     
     void start(Player player);
     boolean isActive();
@@ -27,5 +37,5 @@ public interface Activity {
      */
     boolean configure(CommandSender sender, Command command, String label, String[] args);
     
-    List<String> onConfigureTabComplete(CommandSender sender, String[] args);
+    List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args);
 }
