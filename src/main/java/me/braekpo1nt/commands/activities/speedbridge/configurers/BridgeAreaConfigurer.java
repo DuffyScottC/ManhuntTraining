@@ -6,7 +6,9 @@ import me.braekpo1nt.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BlockVector;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class BridgeAreaConfigurer implements ActivityConfigurer {
@@ -20,39 +22,14 @@ public class BridgeAreaConfigurer implements ActivityConfigurer {
     @Override
     public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 6) {
-            int[] coords = new int[6];
-            for (int i = 0; i < 6; i++) {
-                if (args[i].matches("^~-?\\d*\\.?\\d*$")) {
-                    double offset = 0.0;
-                    if (args[i].length() > 1) {
-                        try {
-                            String offsetString = args[i].substring(1);
-                            offset = Double.parseDouble(offsetString);
-                        } catch (NumberFormatException ex) {
-                            sender.sendMessage("Must provide two valid block locations. \"" + args[i] + "\" is not a valid coordinate.");
-                            return false;
-                        }
-                    }
-                    if (sender instanceof Player) {
-                        Player playerSender = (Player) sender;
-                        coords[i] = Utils.getRelativeCoordinate(playerSender, offset, i % 3);
-                    }
-                } else {
-                    try {
-                        coords[i] =  Integer.parseInt(args[i]);
-                    } catch (NumberFormatException ex) {
-                        sender.sendMessage("Must provide two valid block locations. \"" + args[i] + "\" is not a valid coordinate.");
-                        return false;
-                    }
-                }
+            BlockVector start = Utils.createBlockVectorFromArgs(sender, Arrays.copyOfRange(args, 0, 3));
+            BlockVector end = Utils.createBlockVectorFromArgs(sender, Arrays.copyOfRange(args, 3, 6));
+            if (start == null || end == null) {
+                sender.sendMessage("Please provide a valid block location");
+                return false;
             }
-
-            StringBuilder s = new StringBuilder();
-            for (int coord : coords) {
-                s.append(coord);
-                s.append(",");
-            }
-            sender.sendMessage(s.toString());
+            speedBridgeActivity.setBridgeArea(start, end);
+            sender.sendMessage("Bridge area set.");
             return true;
 
         } else {

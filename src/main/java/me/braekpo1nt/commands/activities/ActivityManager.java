@@ -44,7 +44,7 @@ public class ActivityManager {
     public Map<String, Activity> getActivities() {
         return this.activities;
     }
-
+    
     /**
      * Checks if an activity with the given name exists in the list of activities.
      * @param activityName
@@ -53,7 +53,7 @@ public class ActivityManager {
     public boolean hasActivity(String activityName) {
         return this.activities.containsKey(activityName);
     }
-
+    
     /**
      * Starts the given Activity.
      * @param activityName The name of the activity to start
@@ -66,7 +66,7 @@ public class ActivityManager {
         }
         activities.get(activityName).start(player);
     }
-
+    
     /**
      * Configures the given Activity.
      * @param activityName The name of the Activity to configure
@@ -74,7 +74,6 @@ public class ActivityManager {
      */
     public void configureActivity(CommandSender sender, Command command, String label, String[] args, String activityName) {
         if (activities.containsKey(activityName)) {
-            Bukkit.getLogger().info("Configuring " + activityName);
             activities.get(activityName).configure(sender, command, label, args);
         }
     }

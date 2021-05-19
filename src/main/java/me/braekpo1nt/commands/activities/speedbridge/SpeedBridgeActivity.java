@@ -1,6 +1,7 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
 import me.braekpo1nt.commands.activities.speedbridge.configurers.BridgeAreaConfigurer;
+import me.braekpo1nt.commands.activities.speedbridge.configurers.BridgeStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import me.braekpo1nt.utils.Utils;
@@ -31,7 +32,7 @@ public class SpeedBridgeActivity implements Activity {
     /**
      * The location the player should start at
      */
-    private BlockVector startLocation = new BlockVector(162, 93, -167);
+    private BlockVector startLocation;
     private BoundingBox bridgeArea;
     
     
@@ -40,14 +41,27 @@ public class SpeedBridgeActivity implements Activity {
         
         // Add new ActivityConfigurer objects here
         configurers.put("bridgearea", new BridgeAreaConfigurer(this));
-        
-        BlockVector start = new BlockVector(165, 92, -166);
-        BlockVector end = new BlockVector(159, 92, -157);
+        configurers.put("startlocation", new BridgeStartLocationConfigurer(this));
+    }
+    
+    public void setBridgeArea(BlockVector start, BlockVector end) {
         this.bridgeArea = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
+    }
+
+    public void setStartLocation(BlockVector startLocation) {
+        this.startLocation = startLocation;
     }
     
     @Override
     public void start(Player player) {
+        if (startLocation == null) {
+            player.sendMessage("Start location has not been set.");
+            return;
+        }
+        if (bridgeArea == null) {
+            player.sendMessage("Bridge area has not been set.");
+            return;
+        }
         this.player = player;
         teleportPlayerToStart();
         resetBridgeArea();
@@ -100,7 +114,7 @@ public class SpeedBridgeActivity implements Activity {
     }
 
     private void teleportPlayerToStart() {
-        this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation);
+        this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation.toLocation(this.player.getWorld()));
         this.player.teleport(startLocation.toLocation(this.player.getWorld()));
     }
     
