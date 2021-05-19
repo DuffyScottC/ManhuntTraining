@@ -12,11 +12,11 @@ import org.bukkit.util.BlockVector;
 
 import java.util.List;
 
-public class BridgeStartLocationConfigurer implements ActivityConfigurer {
+public class SpeedBridgeStartLocationConfigurer implements ActivityConfigurer {
     
     Main plugin;
     
-    public BridgeStartLocationConfigurer(Main plugin) {
+    public SpeedBridgeStartLocationConfigurer(Main plugin) {
         this.plugin = plugin;
     }
     

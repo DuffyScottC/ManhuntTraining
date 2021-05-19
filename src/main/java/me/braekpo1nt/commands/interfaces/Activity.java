@@ -16,14 +16,6 @@ import java.util.Map;
  * add it to the ActivityManager
  */
 public interface Activity {
-
-    /**
-     * A map of {@link ActivityConfigurer}s for this {@link Activity}.
-     * Maps configurer option names to their classes.
-     * Add {@link ActivityConfigurer}s to this list to enable the
-     * configuration of this activity.
-     */
-    Map<String, ActivityConfigurer> configurers = new HashMap<>();
     
     void start(Player player);
     boolean isActive();

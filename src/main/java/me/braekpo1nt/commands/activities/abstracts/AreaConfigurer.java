@@ -1,4 +1,4 @@
-package me.braekpo1nt.commands.activities.speedbridge.configurers;
+package me.braekpo1nt.commands.activities.abstracts;
 
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
@@ -13,11 +13,11 @@ import org.bukkit.util.BoundingBox;
 import java.util.Arrays;
 import java.util.List;
 
-public class BridgeAreaConfigurer implements ActivityConfigurer {
+public abstract class AreaConfigurer implements ActivityConfigurer {
     
-    private Main plugin;
+    protected Main plugin;
     
-    public BridgeAreaConfigurer(Main plugin) {
+    public AreaConfigurer(Main plugin) {
         this.plugin = plugin;
     }
     
@@ -27,16 +27,15 @@ public class BridgeAreaConfigurer implements ActivityConfigurer {
             BlockVector start = Utils.createBlockVectorFromArgs(sender, Arrays.copyOfRange(args, 0, 3));
             BlockVector end = Utils.createBlockVectorFromArgs(sender, Arrays.copyOfRange(args, 3, 6));
             if (start == null || end == null) {
-                sender.sendMessage("Please provide a valid block location");
+                sender.sendMessage("Must provide two valid block locations.");
                 return false;
             }
 
             BoundingBox bridgeArea = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
             
-            plugin.getConfig().set(SpeedBridgeActivity.BRIDGE_AREA, bridgeArea);
-            plugin.saveConfig();
-            
-            sender.sendMessage("Bridge area set.");
+            this.setArea(bridgeArea);
+
+            sender.sendMessage("Area set.");
             return true;
 
         } else {
@@ -45,6 +44,18 @@ public class BridgeAreaConfigurer implements ActivityConfigurer {
         }
     }
     
+    protected void setArea(BoundingBox area) {
+        plugin.getConfig().set(this.getConfigString(), area);
+        plugin.saveConfig();
+    }
+
+    /**
+     * This returns the string used to save the area to the
+     * config file.
+     * @return The string used to save the area in the config file.
+     */
+    protected abstract String getConfigString();
+
     /**
      * Returns a tab complete list of one String representing the x, y, or z
      * coordinate of the block the player is looking at, according to which

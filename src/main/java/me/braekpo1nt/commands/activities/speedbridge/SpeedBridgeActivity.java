@@ -1,13 +1,13 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
-import me.braekpo1nt.commands.activities.speedbridge.configurers.BridgeAreaConfigurer;
-import me.braekpo1nt.commands.activities.speedbridge.configurers.BridgeStartLocationConfigurer;
+import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeBridgeAreaConfigurer;
+import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeFinishAreaConfigurer;
+import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
+import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
 import me.braekpo1nt.manhunttraining.Main;
-import me.braekpo1nt.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,15 +16,13 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class SpeedBridgeActivity implements Activity {
     
-    public static final String START_LOCATION = "start-location";
-    public static final String BRIDGE_AREA = "bridge-area";
+    public static final String START_LOCATION = "speed-bridge.start-location";
+    public static final String BRIDGE_AREA = "speed-bridge.bridge-area";
+    public static final String FINISH_AREA = "speed-bridge.finish-area";
     
     private final Main plugin;
     private int heightLimit = 0;
@@ -39,6 +37,13 @@ public class SpeedBridgeActivity implements Activity {
      */
     private BlockVector startLocation;
     private BoundingBox bridgeArea;
+    /**
+     * A map of {@link ActivityConfigurer}s for this {@link Activity}.
+     * Maps configurer option names to their classes.
+     * Add {@link ActivityConfigurer}s to this list to enable the
+     * configuration of this activity.
+     */
+    private final Map<String, ActivityConfigurer> configurers = new HashMap<>();
     
     
     public SpeedBridgeActivity(Main plugin) {
@@ -46,8 +51,9 @@ public class SpeedBridgeActivity implements Activity {
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
         
         // Add new ActivityConfigurer objects here
-        configurers.put("bridgearea", new BridgeAreaConfigurer(plugin));
-        configurers.put("startlocation", new BridgeStartLocationConfigurer(plugin));
+        configurers.put("bridgearea", new SpeedBridgeBridgeAreaConfigurer(plugin));
+        configurers.put("startlocation", new SpeedBridgeStartLocationConfigurer(plugin));
+        configurers.put("finisharea", new SpeedBridgeFinishAreaConfigurer(plugin));
     }
     
     @Override
@@ -100,7 +106,7 @@ public class SpeedBridgeActivity implements Activity {
             return false;
         }
     }
-
+    
     @Override
     public List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
