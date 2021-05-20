@@ -1,6 +1,5 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -19,7 +18,7 @@ public class SpeedBridgeListener implements Listener {
             if (speedBridgeActivity.playerHasFallen()) {
                 speedBridgeActivity.onFallBelowHeight();
                 return;
-            } else if (speedBridgeActivity.playerIsPastFinishLine()) {
+            } else if (speedBridgeActivity.playerIsInFinishArea()) {
                 speedBridgeActivity.onSuccess();
             }
             

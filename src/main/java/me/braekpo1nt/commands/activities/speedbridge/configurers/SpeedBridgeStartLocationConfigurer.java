@@ -1,6 +1,7 @@
 package me.braekpo1nt.commands.activities.speedbridge.configurers;
 
 import me.braekpo1nt.commands.activities.abstracts.LocationConfigurer;
+import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.manhunttraining.Main;
 
 public class SpeedBridgeStartLocationConfigurer extends LocationConfigurer {
@@ -11,7 +12,7 @@ public class SpeedBridgeStartLocationConfigurer extends LocationConfigurer {
 
     @Override
     protected String getConfigString() {
-        return null;
+        return SpeedBridgeActivity.START_LOCATION;
     }
 
 }

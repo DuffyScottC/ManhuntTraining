@@ -26,7 +26,6 @@ public class SpeedBridgeActivity implements Activity {
     
     private final Main plugin;
     private int heightLimit = 0;
-    private int finishLine = -157;
     private Player player;
     /**
      * True if this activity is active, false if not.
@@ -36,7 +35,16 @@ public class SpeedBridgeActivity implements Activity {
      * The location the player should start at
      */
     private BlockVector startLocation;
+    /**
+     * The area that will be set to air to clear the bridge blocks
+     * the user places.
+     */
     private BoundingBox bridgeArea;
+    /**
+     * The area the user has to step into to succeed in the
+     * activity (e.i. the place to bridge to).
+     */
+    private BoundingBox finishArea;
     /**
      * A map of {@link ActivityConfigurer}s for this {@link Activity}.
      * Maps configurer option names to their classes.
@@ -69,7 +77,13 @@ public class SpeedBridgeActivity implements Activity {
             player.sendMessage("Bridge area has not been set.");
             return;
         }
-        this.bridgeArea = (BoundingBox) bridgeAreaConf; 
+        this.bridgeArea = (BoundingBox) bridgeAreaConf;
+        Object finishAreaConf = plugin.getConfig().get(this.FINISH_AREA);
+        if (finishAreaConf == null || !(finishAreaConf instanceof BoundingBox)) {
+            player.sendMessage("Finish area has not been set.");
+            return;
+        }
+        this.finishArea = (BoundingBox) finishAreaConf;
         heightLimit = (int) bridgeArea.getMinY();
         this.player = player;
         teleportPlayerToStart();
@@ -160,9 +174,14 @@ public class SpeedBridgeActivity implements Activity {
     public boolean playerHasFallen() {
         return this.player.getLocation().getBlockY() < this.heightLimit;
     }
-    
-    public boolean playerIsPastFinishLine() {
-        return this.player.getLocation().getBlockZ() > this.finishLine;
+
+    /**
+     * Tells if the player is in the finish area.
+     * @return True if the player's location is contained in the finish area, 
+     * false if not.
+     */
+    public boolean playerIsInFinishArea() {
+        return finishArea.contains(this.player.getLocation().toVector());
     }
 
     public void onSuccess() {

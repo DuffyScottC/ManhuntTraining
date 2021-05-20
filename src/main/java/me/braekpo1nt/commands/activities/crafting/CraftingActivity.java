@@ -1,10 +1,12 @@
 package me.braekpo1nt.commands.activities.crafting;
 
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingStartLocationConfigurer;
+import me.braekpo1nt.commands.activities.crafting.configurers.CraftingTableLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,6 +20,7 @@ import java.util.*;
 public class CraftingActivity implements Activity {
 
     public static final String START_LOCATION = "crafting.start-location";
+    public static final String TABLE_LOCATION = "crafting.table-location";
     
     private Material goalType = null;
     private List<ItemStack> goalIngredients;
@@ -25,6 +28,14 @@ public class CraftingActivity implements Activity {
     private final Main plugin;
     private long stopwatchStart;
     private boolean isActive;
+    /**
+     * The location the player will be teleported to when the craft activity is started.
+     */
+    private BlockVector startLocation;
+    /**
+     * The location the player will be teleported to look at
+     */
+    private BlockVector craftingTableLocation;
 
     /**
      * A map of {@link ActivityConfigurer}s for this {@link Activity}.
@@ -43,6 +54,7 @@ public class CraftingActivity implements Activity {
         plugin.getServer().getPluginManager().registerEvents(new CraftingListener(this, plugin), plugin);
         
         configurers.put("startlocation", new CraftingStartLocationConfigurer(plugin));
+        configurers.put("tablelocation", new CraftingTableLocationConfigurer(plugin));
     }
 
     @Override
@@ -75,7 +87,7 @@ public class CraftingActivity implements Activity {
             return null;
         }
     }
-
+    
     @Override
     public void start(Player player) {
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
@@ -83,8 +95,16 @@ public class CraftingActivity implements Activity {
             player.sendMessage("Start location has not been set.");
             return;
         }
+        this.startLocation = (BlockVector) startLocationConf;
+        Vector tableLocationConf = plugin.getConfig().getVector(this.TABLE_LOCATION);
+        if (tableLocationConf == null || !(tableLocationConf instanceof BlockVector)) {
+            player.sendMessage("Crafting table location has not been set.");
+            return;
+        }
+        this.craftingTableLocation = (BlockVector) tableLocationConf;
         this.isActive = true;
         this.player = player;
+        teleportPlayerToStartPosition();
         assignCraftingTask(player);
         startStopwatch();
     }
@@ -93,8 +113,8 @@ public class CraftingActivity implements Activity {
     public boolean isActive() {
         return this.isActive;
     }
-
-
+    
+    
     private void startStopwatch() {
         this.stopwatchStart = System.currentTimeMillis();
     }
@@ -102,7 +122,15 @@ public class CraftingActivity implements Activity {
     private long stopStopwatch() {
         return System.currentTimeMillis() - this.stopwatchStart;
     }
-
+    
+    private void teleportPlayerToStartPosition() {
+        this.player.sendMessage("Teleporting you to crafting location: " + startLocation);
+        Location loc = startLocation.toLocation(this.player.getWorld());
+        Vector dir = craftingTableLocation.clone().subtract(startLocation);
+        loc.setDirection(dir);
+        this.player.teleport(loc);
+    }
+    
     /**
      * Tells the player which item to craft, gives the player the required
      * items, and tells the craftingListener what item to watch for the
