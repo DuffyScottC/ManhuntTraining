@@ -5,6 +5,7 @@ import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeFini
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
+import me.braekpo1nt.commands.interfaces.Configurable;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class SpeedBridgeActivity implements Activity {
+public class SpeedBridgeActivity implements Activity, Configurable {
     
     public static final String START_LOCATION = "speed-bridge.start-location";
     public static final String BRIDGE_AREA = "speed-bridge.bridge-area";
@@ -52,7 +53,6 @@ public class SpeedBridgeActivity implements Activity {
      * configuration of this activity.
      */
     private final Map<String, ActivityConfigurer> configurers = new HashMap<>();
-    
     
     public SpeedBridgeActivity(Main plugin) {
         this.plugin = plugin;
@@ -93,12 +93,12 @@ public class SpeedBridgeActivity implements Activity {
         this.isActive = true;
         this.player.sendMessage("Start speed bridging!");
     }
-
+    
     @Override
     public boolean isActive() {
         return this.isActive;
     }
-
+    
     @Override
     public void stop() {
         resetBridgeArea();
@@ -107,7 +107,7 @@ public class SpeedBridgeActivity implements Activity {
     }
     
     @Override
-    public boolean configure(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
             if (configurers.containsKey(args[0])) {
                 return configurers.get(args[0]).onConfigure(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
@@ -135,7 +135,7 @@ public class SpeedBridgeActivity implements Activity {
             return null;
         }
     }
-
+    
     private void teleportPlayerToStart() {
         this.player.sendMessage("Teleporting you to speed bridge location: " + startLocation);
         this.player.teleport(startLocation.toLocation(this.player.getWorld(), player.getLocation().getYaw(), player.getLocation().getPitch()));
@@ -151,7 +151,7 @@ public class SpeedBridgeActivity implements Activity {
             }
         }
     }
-
+    
     private void clearPlayersInventory() {
         this.player.getInventory().clear();
     }
@@ -164,7 +164,7 @@ public class SpeedBridgeActivity implements Activity {
         clearPlayersInventory();
         givePlayerBridgeBlocks();
     }
-
+    
     public void onFallBelowHeight() {
         teleportPlayerToStart();
         resetBridgeArea();
@@ -183,7 +183,7 @@ public class SpeedBridgeActivity implements Activity {
     public boolean playerIsInFinishArea() {
         return finishArea.contains(this.player.getLocation().toVector());
     }
-
+    
     public void onSuccess() {
         this.player.sendMessage("Success!");
         stop();

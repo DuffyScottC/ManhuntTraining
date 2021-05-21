@@ -3,6 +3,7 @@ package me.braekpo1nt.commands.activities;
 import me.braekpo1nt.commands.activities.crafting.CraftingActivity;
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.Activity;
+import me.braekpo1nt.commands.interfaces.Configurable;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -74,7 +75,11 @@ public class ActivityManager {
      */
     public void configureActivity(CommandSender sender, Command command, String label, String[] args, String activityName) {
         if (activities.containsKey(activityName)) {
-            activities.get(activityName).configure(sender, command, label, args);
+            Activity activity = activities.get(args[0]);
+            if (activity instanceof Configurable) {
+                Configurable configurableActivity = (Configurable) activity;
+                configurableActivity.onConfigure(sender, command, label, args);
+            }
         }
     }
 }
