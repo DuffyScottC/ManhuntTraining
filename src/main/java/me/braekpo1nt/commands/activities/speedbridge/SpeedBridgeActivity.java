@@ -7,6 +7,7 @@ import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeStar
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
 import me.braekpo1nt.manhunttraining.Main;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -77,6 +78,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
         this.finishArea = (BoundingBox) finishAreaConf;
         heightLimit = (int) bridgeArea.getMinY();
         this.player = player;
+        player.setGameMode(GameMode.SURVIVAL);
         teleportPlayerToStart();
         resetBridgeArea();
         clearPlayersInventory();

@@ -4,6 +4,7 @@ import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,8 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     
     private final Main plugin;
     private Player player;
+    private GameMode oldGamemode;
+    private boolean active = false;
     
     private BlockVector startLocation;
     
@@ -33,6 +36,9 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
         }
         this.startLocation = (BlockVector) startLocationConf;
         this.player = player;
+        active = true;
+        oldGamemode = player.getGameMode();
+        player.setGameMode(GameMode.SURVIVAL);
         teleportPlayerToStart();
         assignMLG();
         player.sendMessage("MLG!");
@@ -49,11 +55,12 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
 
     @Override
     public boolean isActive() {
-        return false;
+        return active;
     }
     
     @Override
     public void stop() {
-        
+        player.setGameMode(oldGamemode);
+        active = false;
     }
 }
