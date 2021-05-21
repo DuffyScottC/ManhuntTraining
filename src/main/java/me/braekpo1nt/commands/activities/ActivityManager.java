@@ -1,6 +1,7 @@
 package me.braekpo1nt.commands.activities;
 
 import me.braekpo1nt.commands.activities.crafting.CraftingActivity;
+import me.braekpo1nt.commands.activities.mlg.MLGActivity;
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.Configurable;
@@ -28,6 +29,7 @@ public class ActivityManager {
          */
         activities.put("craft", new CraftingActivity(plugin));
         activities.put("speedbridge", new SpeedBridgeActivity(plugin));
+        activities.put("mlg", new MLGActivity(plugin));
     }
 
     /**

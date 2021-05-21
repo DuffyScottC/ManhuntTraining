@@ -28,11 +28,14 @@ An Activity is a given trial in the training regimen. For example, the *Crafting
 To add a new activity:
 - create a new package for your activity in the `activities` package.
 - Create a new class that implements the `Activity` interface
+- typically, you would also add a constructor that passed in the `Main` `plugin`, which is used to access the config file for permanent storage of attributes.
 - Add a new instance of the class to the `activities` map in the `ActivityManager`'s constructor, with the Activity's name as the key. 
 - implement the methods from the `Activity` interface
   - `start()` is called when the `Activity` is called by the `ActivityManager`. It kicks off the activity.
   - `stop()` is called when the activity is done. Used for cleaning up the Activity (e.g. resetting areas, changing player's inventory, etc.). 
   - `isActive()` lets any associated `Listener` classes know whether this Activity is active or not.
+
+At this point, the Activity is added to the list of callable activities. The user can call the start command of the Activity by running `/train start <activity name>`.
 
 ### Making an activity configurable
 Activities often need configuration options (e.g. a start position to teleport the player to, or an area to detect events in.) 
