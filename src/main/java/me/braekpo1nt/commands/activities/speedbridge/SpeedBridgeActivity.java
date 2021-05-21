@@ -11,6 +11,7 @@ import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -151,6 +152,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
     
     public void onSuccess() {
         this.player.sendMessage("Success!");
+        this.player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2, 2);
         stop();
     }
 }
