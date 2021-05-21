@@ -38,20 +38,15 @@ To add a new activity:
 Activities often need configuration options (e.g. a start position to teleport the player to, or an area to detect events in.) 
 
 To make an Activity configurable: 
-- implement the `Configurable` interface.
-- `onConfigure()` gets called when the user runs the `/train opt` sub command on the configurable Activity. Use this to call `ActivityConfigurer`s, explained [below](#using-activity-configurers)
-- `onConfigureTabComplete()` gets called when the player tries to pass arguments to the `opt` sub command.
-
+- make the `Activity` class extend the `ConfigurableActivity` abstract class.
+- Create a new `ActivityConfigurer` class for each configuration, as described [below](#using-activity-configurers)
 
 #### Using Activity Configurers
 Activity configurers are used to configure individual aspects of an activity. They are usually used to handle the storage of persistent attributes in the plugin's `config.yaml` file. 
 
-To create a new Activity configurer:
+To create a new Activity configurer for an `Activity` that extends the `ConfigurableActivity` abstract class:
 - create a new class that implements the `ActivityConfigurer` interface for each configuration option. Place it in the `<activity package>/configurers` package.
-- make sure the paired `Activity` class has a map of its `ActivityConfigurer`
-- add a new instantiation of the `AcivityConfigurer` class to the `Activity` class's map of `ActivityConfigurer` using the Activity configurer's name as the key.
-- have the Activity implement the `Configurable` interface
-- have the `onConfigure()` and `onConfigureTabComplete()` methods use the first argument as the key in the map of `ActivityConfigurer`s. 
+- add a new instantiation of the `AcivityConfigurer` class to the `ConfigurableActivity` child class's `configurers` map using the `AcivityConfigurer`'s name as the key.
 
   
 
