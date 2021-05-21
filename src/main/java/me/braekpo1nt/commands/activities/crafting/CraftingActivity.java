@@ -63,7 +63,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
         this.craftingTableLocation = (BlockVector) tableLocationConf;
         this.isActive = true;
         this.player = player;
-        teleportPlayerToStartPosition();
+        teleportPlayerToStart();
         assignCraftingTask(player);
         startStopwatch();
     }
@@ -81,7 +81,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
         return System.currentTimeMillis() - this.stopwatchStart;
     }
     
-    private void teleportPlayerToStartPosition() {
+    private void teleportPlayerToStart() {
         this.player.sendMessage("Teleporting you to crafting location: " + startLocation);
         Location loc = startLocation.toLocation(this.player.getWorld());
         Vector dir = craftingTableLocation.clone().subtract(startLocation);
@@ -148,6 +148,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
      * @param ingredients The ingredients to give to the player
      */
     public void givePlayerIngredients(Player player, List<ItemStack> ingredients) {
+        player.getInventory().clear();
         for (ItemStack ingredient : ingredients) {
             player.getInventory().addItem(ingredient);
         }

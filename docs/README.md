@@ -50,6 +50,9 @@ Activity configurers are used to configure individual aspects of an activity. Th
 To create a new Activity configurer for an `Activity` that extends the `ConfigurableActivity` abstract class:
 - create a new class that implements the `ActivityConfigurer` interface for each configuration option. Place it in the `<activity package>/configurers` package.
 - add a new instantiation of the `AcivityConfigurer` class to the `ConfigurableActivity` child class's `configurers` map using the `AcivityConfigurer`'s name as the key.
+- implement the methods of the `ActivityConfigurer`
+  - `onConfigure()` is called when the player uses the `/train opt <activity> <configure option>` associated with the `ActivityConfigurer`
+  - `onTabComplete()` is called when the player tries to pass arguments to the `ActivityConfigurer`
 
   
 
