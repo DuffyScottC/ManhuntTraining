@@ -9,10 +9,10 @@ public class SpeedBridgeStartLocationConfigurer extends LocationConfigurer {
     public SpeedBridgeStartLocationConfigurer(Main plugin) {
         super(plugin);
     }
-
+    
     @Override
     protected String getConfigString() {
         return SpeedBridgeActivity.START_LOCATION;
     }
-
+    
 }
