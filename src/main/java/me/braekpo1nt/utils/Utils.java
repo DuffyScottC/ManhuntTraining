@@ -97,7 +97,7 @@ public abstract class Utils {
                 }
             }
         }
-        return new BlockVector(coords[0], coords[1], coords[2]);
+        return new BlockVector(coords[0] + .5, coords[1], coords[2] + .5);
     }
     
 }
