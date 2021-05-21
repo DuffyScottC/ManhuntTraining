@@ -1,16 +1,14 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
+import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeBridgeAreaConfigurer;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeFinishAreaConfigurer;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
-import me.braekpo1nt.commands.interfaces.Configurable;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -19,7 +17,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class SpeedBridgeActivity implements Activity, Configurable {
+public class SpeedBridgeActivity extends ConfigurableActivity implements Activity {
     
     public static final String START_LOCATION = "speed-bridge.start-location";
     public static final String BRIDGE_AREA = "speed-bridge.bridge-area";
@@ -46,13 +44,6 @@ public class SpeedBridgeActivity implements Activity, Configurable {
      * activity (e.i. the place to bridge to).
      */
     private BoundingBox finishArea;
-    /**
-     * A map of {@link ActivityConfigurer}s for this {@link Activity}.
-     * Maps configurer option names to their classes.
-     * Add {@link ActivityConfigurer}s to this list to enable the
-     * configuration of this activity.
-     */
-    private final Map<String, ActivityConfigurer> configurers = new HashMap<>();
     
     public SpeedBridgeActivity(Main plugin) {
         this.plugin = plugin;
@@ -104,36 +95,6 @@ public class SpeedBridgeActivity implements Activity, Configurable {
         resetBridgeArea();
         clearPlayersInventory();
         this.isActive = false;
-    }
-    
-    @Override
-    public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 0) {
-            if (configurers.containsKey(args[0])) {
-                return configurers.get(args[0]).onConfigure(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
-            } else {
-                sender.sendMessage("Provide a valid option. \"" + args[0] + "\" is not a recognized option.");
-                return false;
-            }
-        } else {
-            sender.sendMessage("Please provide a valid option argument.");
-            return false;
-        }
-    }
-    
-    @Override
-    public List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1) {
-            return new ArrayList<>(configurers.keySet());
-        } else if (args.length > 1) {
-            if (configurers.containsKey(args[0])) {
-                return configurers.get(args[0]).onTabComplete(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
     }
     
     private void teleportPlayerToStart() {

@@ -24,7 +24,6 @@ public abstract class LocationConfigurer implements ActivityConfigurer {
     
     @Override
     public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
-        Bukkit.getLogger().info("args.length: " + args.length);
         if (args.length == 3) {
             BlockVector loc = Utils.createBlockVectorFromArgs(sender, args);
             if (loc == null) {

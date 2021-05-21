@@ -75,7 +75,7 @@ public class ActivityManager {
      */
     public void configureActivity(CommandSender sender, Command command, String label, String[] args, String activityName) {
         if (activities.containsKey(activityName)) {
-            Activity activity = activities.get(args[0]);
+            Activity activity = activities.get(activityName);
             if (activity instanceof Configurable) {
                 Configurable configurableActivity = (Configurable) activity;
                 configurableActivity.onConfigure(sender, command, label, args);

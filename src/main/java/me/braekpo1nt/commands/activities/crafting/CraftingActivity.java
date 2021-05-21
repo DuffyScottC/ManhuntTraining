@@ -1,16 +1,13 @@
 package me.braekpo1nt.commands.activities.crafting;
 
+import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingStartLocationConfigurer;
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingTableLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
-import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
-import me.braekpo1nt.commands.interfaces.Configurable;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 import org.bukkit.util.BlockVector;
@@ -18,7 +15,7 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class CraftingActivity implements Activity, Configurable {
+public class CraftingActivity extends ConfigurableActivity implements Activity {
     
     public static final String START_LOCATION = "crafting.start-location";
     public static final String TABLE_LOCATION = "crafting.table-location";
@@ -39,14 +36,6 @@ public class CraftingActivity implements Activity, Configurable {
     private BlockVector craftingTableLocation;
     
     /**
-     * A map of {@link ActivityConfigurer}s for this {@link Activity}.
-     * Maps configurer option names to their classes.
-     * Add {@link ActivityConfigurer}s to this list to enable the
-     * configuration of this activity.
-     */
-    private final Map<String, ActivityConfigurer> configurers = new HashMap<>();
-    
-    /**
      * Initializes the CraftingActivity. Includes registering event listeners.
      * @param plugin
      */
@@ -56,36 +45,6 @@ public class CraftingActivity implements Activity, Configurable {
         
         configurers.put("startlocation", new CraftingStartLocationConfigurer(plugin));
         configurers.put("tablelocation", new CraftingTableLocationConfigurer(plugin));
-    }
-    
-    @Override
-    public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 0) {
-            if (configurers.containsKey(args[0])) {
-                return configurers.get(args[0]).onConfigure(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
-            } else {
-                sender.sendMessage("Provide a valid option. \"" + args[0] + "\" is not a recognized option.");
-                return false;
-            }
-        } else {
-            sender.sendMessage("Please provide a valid option argument.");
-            return false;
-        }
-    }
-    
-    @Override
-    public List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 1) {
-            return new ArrayList<>(configurers.keySet());
-        } else if (args.length > 1) {
-            if (configurers.containsKey(args[0])) {
-                return configurers.get(args[0]).onTabComplete(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
     }
     
     @Override
