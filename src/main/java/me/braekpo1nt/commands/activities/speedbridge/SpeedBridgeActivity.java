@@ -8,6 +8,7 @@ import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeStar
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
 import me.braekpo1nt.manhunttraining.Main;
+import me.braekpo1nt.visualizers.BoundingBoxVisualizer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,10 +48,13 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
      * activity (e.i. the place to bridge to).
      */
     private BoundingBox finishArea;
+    private final BoundingBoxVisualizer boundingBoxVisualizer;
     
     public SpeedBridgeActivity(Main plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
+        
+        boundingBoxVisualizer = new BoundingBoxVisualizer(plugin);
         
         // Add new ActivityConfigurer objects here
         configurers.put("bridgearea", new SpeedBridgeBridgeAreaConfigurer(plugin));
@@ -78,8 +82,11 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
             return;
         }
         this.finishArea = (BoundingBox) finishAreaConf;
-        heightLimit = (int) bridgeArea.getMinY();
+
         this.player = plugin.getActivityManager().getPlayer();
+        boundingBoxVisualizer.setBoundingBox(bridgeArea);
+        boundingBoxVisualizer.show(player);
+        heightLimit = (int) bridgeArea.getMinY();
         player.setGameMode(GameMode.SURVIVAL);
         teleportPlayerToStart();
         resetBridgeArea();
@@ -100,6 +107,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
         clearPlayersInventory();
         this.isActive = false;
         plugin.getActivityManager().onContinue();
+        boundingBoxVisualizer.hide();
     }
     
     private void teleportPlayerToStart() {
