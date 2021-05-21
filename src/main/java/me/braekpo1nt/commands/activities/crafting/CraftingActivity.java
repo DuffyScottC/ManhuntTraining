@@ -45,7 +45,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
         configurers.put("startlocation", new CraftingStartLocationConfigurer(plugin));
         configurers.put("tablelocation", new CraftingTableLocationConfigurer(plugin));
     }
-    private int particleTaskId;
+    
     @Override
     public void start() {
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
@@ -65,19 +65,6 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
         teleportPlayerToStart();
         assignCraftingTask(player);
         startStopwatch();
-
-        particleTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            int count = 0;
-            @Override
-            public void run() {
-                if (count >= 10*20){
-                    Bukkit.getScheduler().cancelTask(particleTaskId);
-                } else {
-                    player.spawnParticle(Particle.REDSTONE, craftingTableLocation.clone().add(new Vector(0, 1, 0)).toLocation(player.getWorld()), 1, new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1));
-                }
-                count += 1;
-            }
-        }, 0L, 1L);
     }
     
     @Override
