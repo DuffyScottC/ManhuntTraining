@@ -7,5 +7,4 @@ import org.bukkit.command.CommandExecutor;
  * the {@link CommandManager} interface.
  */
 public interface SubCommand extends CommandExecutor {
-    
 }

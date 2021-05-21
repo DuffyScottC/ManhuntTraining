@@ -4,6 +4,7 @@ import me.braekpo1nt.commands.activities.crafting.configurers.CraftingStartLocat
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingTableLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
+import me.braekpo1nt.commands.interfaces.Configurable;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,8 +18,8 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class CraftingActivity implements Activity {
-
+public class CraftingActivity implements Activity, Configurable {
+    
     public static final String START_LOCATION = "crafting.start-location";
     public static final String TABLE_LOCATION = "crafting.table-location";
     
@@ -36,7 +37,7 @@ public class CraftingActivity implements Activity {
      * The location the player will be teleported to look at
      */
     private BlockVector craftingTableLocation;
-
+    
     /**
      * A map of {@link ActivityConfigurer}s for this {@link Activity}.
      * Maps configurer option names to their classes.
@@ -56,9 +57,9 @@ public class CraftingActivity implements Activity {
         configurers.put("startlocation", new CraftingStartLocationConfigurer(plugin));
         configurers.put("tablelocation", new CraftingTableLocationConfigurer(plugin));
     }
-
+    
     @Override
-    public boolean configure(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
             if (configurers.containsKey(args[0])) {
                 return configurers.get(args[0]).onConfigure(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
@@ -71,10 +72,9 @@ public class CraftingActivity implements Activity {
             return false;
         }
     }
-
+    
     @Override
     public List<String> onConfigureTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        Bukkit.getLogger().info("Here2");
         if (args.length == 1) {
             return new ArrayList<>(configurers.keySet());
         } else if (args.length > 1) {
@@ -108,12 +108,11 @@ public class CraftingActivity implements Activity {
         assignCraftingTask(player);
         startStopwatch();
     }
-
+    
     @Override
     public boolean isActive() {
         return this.isActive;
     }
-    
     
     private void startStopwatch() {
         this.stopwatchStart = System.currentTimeMillis();
@@ -143,7 +142,7 @@ public class CraftingActivity implements Activity {
         this.goalType = goalRecipe.getResult().getType();
         player.sendMessage("You must craft a " + goalRecipe.getResult().getType());
     }
-
+    
     /**
      * Returns a new goal recipe for the player to
      * craft. 
@@ -160,7 +159,7 @@ public class CraftingActivity implements Activity {
         }
         return goalRecipe;
     }
-
+    
     /**
      * Returns the list of ingredients of the passed in recipe, provided
      * it is of type ShapedRecipe or ShapelessRecipe. If it is not
@@ -196,7 +195,7 @@ public class CraftingActivity implements Activity {
     }
     
     public void craftSuccess() {
-        this.player.sendMessage("Success! " + Double.toString((double) stopStopwatch() / 1000.0) + " seconds.");
+        this.player.sendMessage("Success! " + (double) stopStopwatch() / 1000.0 + " seconds.");
         this.goalType = null;
         Bukkit.getScheduler().scheduleSyncDelayedTask(CraftingActivity.this.plugin, new Runnable() {
             @Override

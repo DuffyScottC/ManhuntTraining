@@ -1,11 +1,11 @@
 package me.braekpo1nt.commands.subcommands;
 
+import me.braekpo1nt.commands.interfaces.Activity;
+import me.braekpo1nt.commands.interfaces.Configurable;
 import me.braekpo1nt.commands.interfaces.SubTabCommand;
 import me.braekpo1nt.manhunttraining.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +41,13 @@ public class OptSubCommand implements SubTabCommand {
             return new ArrayList<>(this.plugin.getActivityManager().getActivities().keySet());
         } else if (args.length > 1) {
             if (this.plugin.getActivityManager().hasActivity(args[0])) {
-                return this.plugin.getActivityManager().getActivities().get(args[0]).onConfigureTabComplete(sender, command, alias, Arrays.copyOfRange(args, 1, args.length));
+
+                Activity activity = this.plugin.getActivityManager().getActivities().get(args[0]);
+                if (activity instanceof Configurable) {
+                    Configurable configurableActivity = (Configurable) activity;
+                    return configurableActivity.onConfigureTabComplete(sender, command, alias, Arrays.copyOfRange(args, 1, args.length));
+                }
+                
             } else {
                 return null;
             }
