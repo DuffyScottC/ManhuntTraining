@@ -25,7 +25,8 @@ public abstract class ChunkConfigurer implements ActivityConfigurer {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 Chunk chunk = player.getLocation().getChunk();
-                setChunk(chunk);
+                BlockVector chunkVector = new BlockVector(chunk.getX(), 0, chunk.getZ());
+                setChunkVector(chunkVector);
                 sender.sendMessage("Chunk is set.");
                 return true;
             } else {
@@ -35,16 +36,17 @@ public abstract class ChunkConfigurer implements ActivityConfigurer {
         } else {
             if (args.length == 2) {
                 String[] newArgs = new String[] {args[0], "0", args[1]};
-                BlockVector chunkVector = Utils.createBlockVectorFromArgs(sender, newArgs);
-                if (chunkVector != null) {
+                BlockVector blockInChunk = Utils.createBlockVectorFromArgs(sender, newArgs);
+                if (blockInChunk != null) {
                     Chunk chunk;
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
-                        chunk = player.getWorld().getChunkAt(chunkVector.getBlockX(), chunkVector.getBlockZ());
+                        chunk = player.getWorld().getChunkAt(blockInChunk.getBlockX(), blockInChunk.getBlockZ());
                     } else {
-                        chunk = sender.getServer().getWorlds().get(0).getChunkAt(chunkVector.getBlockX(), chunkVector.getBlockZ());
+                        chunk = sender.getServer().getWorlds().get(0).getChunkAt(blockInChunk.getBlockX(), blockInChunk.getBlockZ());
                     }
-                    setChunk(chunk);
+                    BlockVector chunkVector = new BlockVector(chunk.getX(), 0, chunk.getZ());
+                    setChunkVector(chunkVector);
                     sender.sendMessage("Chunk is set.");
                     return true;
                 } else {
@@ -57,8 +59,8 @@ public abstract class ChunkConfigurer implements ActivityConfigurer {
         }
     }
 
-    private void setChunk(Chunk chunk) {
-        plugin.getConfig().set(this.getConfigString(), chunk);
+    protected void setChunkVector(BlockVector chunkVector) {
+        plugin.getConfig().set(this.getConfigString(), chunkVector);
         plugin.saveConfig();
     }
 

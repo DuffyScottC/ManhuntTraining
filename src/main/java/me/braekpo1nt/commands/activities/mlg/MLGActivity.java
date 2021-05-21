@@ -42,12 +42,13 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
             return;
         }
         this.startLocation = (BlockVector) startLocationConf;
-        Object chunkConf = plugin.getConfig().get(this.CHUNK);
-        if (chunkConf == null || !(chunkConf instanceof Chunk)) {
+        Vector chunkVectorConf = plugin.getConfig().getVector(this.CHUNK);
+        if (chunkVectorConf == null || !(chunkVectorConf instanceof BlockVector)) {
             player.sendMessage("Chunk has not been set.");
             return;
         }
-        this.chunk = (Chunk) chunkConf; 
+        BlockVector chunkVector = (BlockVector) chunkVectorConf; 
+        this.chunk = player.getWorld().getChunkAt(chunkVector.getBlockX(), chunkVector.getBlockZ());
         this.player = player;
         active = true;
         oldGamemode = player.getGameMode();
