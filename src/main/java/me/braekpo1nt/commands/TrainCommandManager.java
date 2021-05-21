@@ -6,6 +6,7 @@ import me.braekpo1nt.commands.interfaces.SubCommand;
 import me.braekpo1nt.commands.interfaces.SubTabCommand;
 import me.braekpo1nt.commands.subcommands.OptSubCommand;
 import me.braekpo1nt.commands.subcommands.StartSubCommand;
+import me.braekpo1nt.commands.subcommands.StopSubCommand;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -27,6 +28,7 @@ public class TrainCommandManager implements CommandManager {
         this.plugin.getCommand("train").setExecutor(this);
         subCommands.put("start", new StartSubCommand(plugin));
         subCommands.put("opt", new OptSubCommand(plugin));
+        subCommands.put("stop", new StopSubCommand(plugin));
     }
     
     @Override

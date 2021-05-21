@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface Activity {
     
-    void start(Player player);
+    void start();
     boolean isActive();
     void stop();
     

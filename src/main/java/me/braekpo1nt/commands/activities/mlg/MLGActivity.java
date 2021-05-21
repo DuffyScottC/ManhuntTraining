@@ -1,5 +1,6 @@
 package me.braekpo1nt.commands.activities.mlg;
 
+import me.braekpo1nt.commands.activities.ActivityManager;
 import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGChunkConfigurer;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGStartLocationConfigurer;
@@ -35,7 +36,7 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     }
     
     @Override
-    public void start(Player player) {
+    public void start() {
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
         if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
@@ -47,9 +48,9 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
             player.sendMessage("Chunk has not been set.");
             return;
         }
-        BlockVector chunkVector = (BlockVector) chunkVectorConf; 
+        BlockVector chunkVector = (BlockVector) chunkVectorConf;
+        this.player = plugin.getActivityManager().getPlayer();
         this.chunk = player.getWorld().getChunkAt(chunkVector.getBlockX(), chunkVector.getBlockZ());
-        this.player = player;
         active = true;
         oldGamemode = player.getGameMode();
         player.setGameMode(GameMode.SURVIVAL);
@@ -90,5 +91,6 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     public void stop() {
         player.setGameMode(oldGamemode);
         active = false;
+        plugin.getActivityManager().onContinue();
     }
 }

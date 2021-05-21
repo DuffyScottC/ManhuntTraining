@@ -21,10 +21,19 @@ import java.util.*;
  */
 public class ActivityManager {
     
+    private final Main plugin;
     private final Map<String, Activity> activities = new HashMap<>();
     private Activity activeActivity = null;
-
+    private boolean inTrainingCycle = false;
+    /**
+     * The player who is performing the training.
+     */
+    private Player player;
+    
+    private int continueTaskID;
+    
     public ActivityManager(Main plugin) {
+        this.plugin = plugin;
         /*
         Add new activities here, pairing them with their name.
          */
@@ -32,12 +41,21 @@ public class ActivityManager {
         activities.put("speedbridge", new SpeedBridgeActivity(plugin));
         activities.put("mlg", new MLGActivity(plugin));
     }
-
+    
+    /**
+     * Gets the player who is performing the training.
+     * @return The player who is performing the training.
+     */
+    public Player getPlayer() {
+        return this.player;
+    }
+    
     /**
      * Chooses a random activity from the list of activities to start.
      * @param player The player to start the activities for. 
      */
     public void startRandomActivity(Player player) {
+        this.player = player;
         if (activeActivity != null && activeActivity.isActive()) {
             activeActivity.stop();
         }
@@ -46,7 +64,7 @@ public class ActivityManager {
         int randomIndex = random.nextInt(activities.size());
         Bukkit.getLogger().info("random index for activity: " + Integer.toString(randomIndex));
         activeActivity = activities.get(activities.keySet().toArray()[randomIndex]);
-        activeActivity.start(player);
+        activeActivity.start();
     }
     
     public Map<String, Activity> getActivities() {
@@ -68,6 +86,7 @@ public class ActivityManager {
      * @param player The player to pass to the activity
      */
     public void startActivity(String activityName, Player player) {
+        this.player = player;
         if (!activities.containsKey(activityName)) {
             player.sendMessage("Activity with name \"" + activityName + "\" could not be found.");
             return;
@@ -76,7 +95,66 @@ public class ActivityManager {
             activeActivity.stop();
         }
         activeActivity = activities.get(activityName);
-        activeActivity.start(player);
+        activeActivity.start();
+    }
+
+    /**
+     * Kicks off the training cycle, wherein the player is
+     * continuously put through successive random training
+     * activities.
+     * @param player The player to train.
+     */
+    public void startTrainingCycle(Player player) {
+        inTrainingCycle = true;
+        startRandomActivity(player);
+    }
+    
+    /**
+     * Called when the ActivityManager should continue. 
+     * - If we're in the training cycle, this moves on to the next task
+     * - If we're not in the training cycle, this does nothing.
+     */
+    public void onContinue() {
+        if (activeActivity != null && activeActivity.isActive()) {
+            activeActivity.stop();
+        }
+        if (inTrainingCycle) {
+            continueTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+                
+                int countStart = 3;
+                int count = countStart;
+                
+                @Override
+                public void run() {
+                    if (count <= 0) {
+                        startRandomActivity(player);
+                        Bukkit.getScheduler().cancelTask(continueTaskID);
+                    } else if (count == countStart){
+                        player.sendMessage("Next task in:");
+                        player.sendMessage(Integer.toString(count));
+                    } else {
+                        player.sendMessage(Integer.toString(count));
+                    }
+                    count -= 1;
+                }
+            }, 0, 20);
+        }
+    }
+    
+    public boolean isInTrainingCycle() {
+        return this.inTrainingCycle;
+    }
+
+    /**
+     * Called when the player wants to quit training.
+     * This stops the active Activity and stops the training cycle.
+     */
+    public void onQuit() {
+        if (activeActivity != null && activeActivity.isActive()) {
+            activeActivity.stop();
+        }
+        player = null;
+        inTrainingCycle = false;
     }
     
     /**

@@ -1,5 +1,6 @@
 package me.braekpo1nt.commands.activities.crafting;
 
+import me.braekpo1nt.commands.activities.ActivityManager;
 import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingStartLocationConfigurer;
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingTableLocationConfigurer;
@@ -48,7 +49,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
     }
     
     @Override
-    public void start(Player player) {
+    public void start() {
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
         if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
@@ -62,7 +63,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
         }
         this.craftingTableLocation = (BlockVector) tableLocationConf;
         this.isActive = true;
-        this.player = player;
+        this.player = plugin.getActivityManager().getPlayer();
         teleportPlayerToStart();
         assignCraftingTask(player);
         startStopwatch();
@@ -164,13 +165,14 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
             }
         }, 1L);
         this.stopwatchStart = System.currentTimeMillis();
-        
+        stop();
     }
     
     @Override
     public void stop() {
         this.player.getInventory().clear();
         this.isActive = false;
+        plugin.getActivityManager().onContinue();
     }
 
     public Material getGoalType() {

@@ -1,5 +1,6 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
+import me.braekpo1nt.commands.activities.ActivityManager;
 import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeBridgeAreaConfigurer;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeFinishAreaConfigurer;
@@ -57,7 +58,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
     }
     
     @Override
-    public void start(Player player) {
+    public void start() {
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
         if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
@@ -77,7 +78,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
         }
         this.finishArea = (BoundingBox) finishAreaConf;
         heightLimit = (int) bridgeArea.getMinY();
-        this.player = player;
+        this.player = plugin.getActivityManager().getPlayer();
         player.setGameMode(GameMode.SURVIVAL);
         teleportPlayerToStart();
         resetBridgeArea();
@@ -97,6 +98,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
         resetBridgeArea();
         clearPlayersInventory();
         this.isActive = false;
+        plugin.getActivityManager().onContinue();
     }
     
     private void teleportPlayerToStart() {
