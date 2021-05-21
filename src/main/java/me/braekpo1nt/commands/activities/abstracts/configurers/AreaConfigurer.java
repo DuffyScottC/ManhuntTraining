@@ -1,4 +1,4 @@
-package me.braekpo1nt.commands.activities.abstracts;
+package me.braekpo1nt.commands.activities.abstracts.configurers;
 
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
@@ -57,16 +57,18 @@ public abstract class AreaConfigurer implements ActivityConfigurer {
     protected abstract String getConfigString();
 
     /**
-     * Returns a tab complete list of one String representing the x, y, or z
+     * Returns a tab complete list of one String representing the x or z
      * coordinate of the block the player is looking at, according to which
-     * argument number they are on.
-     * @param sender
-     * @param command
-     * @param label
-     * @param args
-     * @return a list of one string with the x, y,. or z component of the 
+     * argument number they are on. Relative coordinates if the player is
+     * not looking at a block in 10 blocks.
+     * @param sender the sender
+     * @param command the command
+     * @param label the label
+     * @param args the args to perform tab completion on
+     * @return a list of one string with the x or z component of the 
      * location of the block the player is looking at according to the 
-     * argument position. null if the sender is not a player.
+     * argument position. null if the sender is not a player. Relative 
+     * coordinates if the player is not looking at a block in 10 blocks.
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {

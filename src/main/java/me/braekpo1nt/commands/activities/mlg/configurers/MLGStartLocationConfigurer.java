@@ -1,6 +1,6 @@
 package me.braekpo1nt.commands.activities.mlg.configurers;
 
-import me.braekpo1nt.commands.activities.abstracts.LocationConfigurer;
+import me.braekpo1nt.commands.activities.abstracts.configurers.LocationConfigurer;
 import me.braekpo1nt.commands.activities.mlg.MLGActivity;
 import me.braekpo1nt.manhunttraining.Main;
 

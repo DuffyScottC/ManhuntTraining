@@ -1,4 +1,4 @@
-package me.braekpo1nt.commands.activities.abstracts;
+package me.braekpo1nt.commands.activities.abstracts.configurers;
 
 import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
 import me.braekpo1nt.commands.interfaces.ActivityConfigurer;

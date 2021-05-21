@@ -1,9 +1,11 @@
 package me.braekpo1nt.commands.activities.mlg;
 
 import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
+import me.braekpo1nt.commands.activities.mlg.configurers.MLGChunkConfigurer;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,19 +16,22 @@ import org.bukkit.util.Vector;
 public class MLGActivity extends ConfigurableActivity implements Activity {
     
     public static final String START_LOCATION = "mlg.start-location";
-    
+    public static final String CHUNK = "mlg.chunk";
+
     private final Main plugin;
     private Player player;
     private GameMode oldGamemode;
     private boolean active = false;
     
     private BlockVector startLocation;
+    private Chunk chunk;
     
     public MLGActivity(Main plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(new MLGListener(this, plugin), plugin);
         
         configurers.put("startlocation", new MLGStartLocationConfigurer(plugin));
+        configurers.put("chunk", new MLGChunkConfigurer(plugin));
     }
     
     @Override
@@ -37,6 +42,12 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
             return;
         }
         this.startLocation = (BlockVector) startLocationConf;
+        Object chunkConf = plugin.getConfig().get(this.CHUNK);
+        if (chunkConf == null || !(chunkConf instanceof Chunk)) {
+            player.sendMessage("Chunk has not been set.");
+            return;
+        }
+        this.chunk = (Chunk) chunkConf; 
         this.player = player;
         active = true;
         oldGamemode = player.getGameMode();
