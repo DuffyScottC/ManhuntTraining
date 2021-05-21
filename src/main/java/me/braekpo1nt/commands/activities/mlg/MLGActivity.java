@@ -24,6 +24,8 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     
     public MLGActivity(Main plugin) {
         this.plugin = plugin;
+        plugin.getServer().getPluginManager().registerEvents(new MLGListener(this, plugin), plugin);
+        
         configurers.put("startlocation", new MLGStartLocationConfigurer(plugin));
     }
     
@@ -43,6 +45,11 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
         assignMLG();
         player.sendMessage("MLG!");
     }
+    
+    public void retry() {
+        teleportPlayerToStart();
+        assignMLG();
+    }
 
     private void teleportPlayerToStart() {
         this.player.teleport(startLocation.toLocation(this.player.getWorld(), 0, 90));
@@ -56,6 +63,15 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     @Override
     public boolean isActive() {
         return active;
+    }
+    
+    public boolean playerIsOnGround() {
+        return player.getLocation().clone().subtract(0,0.1,0).getBlock().getType().isSolid();
+    }
+    
+    public void onSuccess() {
+        player.sendMessage("Success!");
+        stop();
     }
     
     @Override
