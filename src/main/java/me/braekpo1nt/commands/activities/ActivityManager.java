@@ -21,8 +21,9 @@ import java.util.*;
  */
 public class ActivityManager {
     
-    Map<String, Activity> activities = new HashMap<>();
-    
+    private final Map<String, Activity> activities = new HashMap<>();
+    private Activity activeActivity = null;
+
     public ActivityManager(Main plugin) {
         /*
         Add new activities here, pairing them with their name.
@@ -37,11 +38,15 @@ public class ActivityManager {
      * @param player The player to start the activities for. 
      */
     public void startRandomActivity(Player player) {
+        if (activeActivity != null && activeActivity.isActive()) {
+            activeActivity.stop();
+        }
         player.sendMessage("Randomly choosing an activity...");
         Random random = new Random();
         int randomIndex = random.nextInt(activities.size());
         Bukkit.getLogger().info("random index for activity: " + Integer.toString(randomIndex));
-        activities.get(activities.keySet().toArray()[randomIndex]).start(player);
+        activeActivity = activities.get(activities.keySet().toArray()[randomIndex]);
+        activeActivity.start(player);
     }
     
     public Map<String, Activity> getActivities() {
@@ -67,7 +72,11 @@ public class ActivityManager {
             player.sendMessage("Activity with name \"" + activityName + "\" could not be found.");
             return;
         }
-        activities.get(activityName).start(player);
+        if (activeActivity != null && activeActivity.isActive()) {
+            activeActivity.stop();
+        }
+        activeActivity = activities.get(activityName);
+        activeActivity.start(player);
     }
     
     /**
