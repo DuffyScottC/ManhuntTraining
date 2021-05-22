@@ -13,7 +13,7 @@ public class BoundingBoxVisualizer {
 
     private int particleTaskId;
     private final Main plugin;
-    private final double INCREMENT = 1.0;
+    private final int INCREMENT = 1;
     
     private BoundingBox boundingBox;
     
@@ -31,11 +31,33 @@ public class BoundingBoxVisualizer {
             @Override
             public void run() {
                 if (boundingBox != null) {
-                    for (double x = boundingBox.getMinX(); x <= boundingBox.getMaxX(); x += INCREMENT) {
-                        for (double y = boundingBox.getMinY(); y <= boundingBox.getMaxY(); y += INCREMENT) {
-                            for (double z = boundingBox.getMinZ(); z <= boundingBox.getMaxZ(); z += INCREMENT) {
-                                Location loc = new Location(player.getWorld(), x, y, z);
-                                player.spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1));
+                    int maxX = boundingBox.getMax().getBlockX();
+                    int maxY = boundingBox.getMax().getBlockY();
+                    int maxZ = boundingBox.getMax().getBlockZ();
+                    int minX = boundingBox.getMin().getBlockX();
+                    int minY = boundingBox.getMin().getBlockY();
+                    int minZ = boundingBox.getMin().getBlockZ();
+                    for (int x = minX; x <= maxX; x += INCREMENT) {
+                        for (int y = minY; y <= maxY; y += INCREMENT) {
+                            for (int z = minZ; z <= maxZ; z += INCREMENT) {
+                                int count = 0;
+
+                                if (x == minX || x == maxX) {
+                                    count++;
+                                }
+
+                                if (y == minY || y == maxY) {
+                                    count++;
+                                }
+
+                                if (z == minZ || z == maxZ) {
+                                    count++;
+                                }
+
+                                if (count == 2 || count == 3) {
+                                    Location loc = new Location(player.getWorld(), x, y, z);
+                                    player.spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1));
+                                }
                             }
                         }
                     }
