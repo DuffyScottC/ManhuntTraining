@@ -119,6 +119,7 @@ public class ActivityManager {
             activeActivity.stop();
         }
         if (inTrainingCycle) {
+            Player schedulePlayer = this.player;
             continueTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                 
                 int countStart = 3;
@@ -127,13 +128,13 @@ public class ActivityManager {
                 @Override
                 public void run() {
                     if (count <= 0) {
-                        startRandomActivity(player);
+                        startRandomActivity(schedulePlayer);
                         Bukkit.getScheduler().cancelTask(continueTaskID);
-                    } else if (count == countStart){
-                        player.sendMessage("Next task in:");
-                        player.sendMessage(Integer.toString(count));
+                    } else if (count == countStart) {
+                        schedulePlayer.sendMessage("Next task in:");
+                        schedulePlayer.sendMessage(Integer.toString(count));
                     } else {
-                        player.sendMessage(Integer.toString(count));
+                        schedulePlayer.sendMessage(Integer.toString(count));
                     }
                     count -= 1;
                 }
