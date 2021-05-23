@@ -38,6 +38,7 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     
     @Override
     public void start() {
+        this.player = plugin.getActivityManager().getPlayer();
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
         if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
@@ -50,7 +51,6 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
             return;
         }
         BlockVector chunkVector = (BlockVector) chunkVectorConf;
-        this.player = plugin.getActivityManager().getPlayer();
         this.chunk = player.getWorld().getChunkAt(chunkVector.getBlockX(), chunkVector.getBlockZ());
         active = true;
         oldGamemode = player.getGameMode();

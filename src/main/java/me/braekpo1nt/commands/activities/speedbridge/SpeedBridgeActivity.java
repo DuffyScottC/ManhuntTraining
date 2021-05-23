@@ -64,6 +64,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
     
     @Override
     public void start() {
+        this.player = plugin.getActivityManager().getPlayer();
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
         if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
@@ -83,7 +84,6 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
         }
         this.finishArea = (BoundingBox) finishAreaConf;
 
-        this.player = plugin.getActivityManager().getPlayer();
         boundingBoxVisualizer.setBoundingBox(bridgeArea);
         boundingBoxVisualizer.show(player);
         heightLimit = (int) bridgeArea.getMinY();

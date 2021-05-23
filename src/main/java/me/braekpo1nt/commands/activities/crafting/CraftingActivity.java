@@ -48,6 +48,7 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
     
     @Override
     public void start() {
+        this.player = plugin.getActivityManager().getPlayer();
         Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
         if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
             player.sendMessage("Start location has not been set.");
@@ -61,7 +62,6 @@ public class CraftingActivity extends ConfigurableActivity implements Activity {
         }
         this.craftingTableLocation = (BlockVector) tableLocationConf;
         this.isActive = true;
-        this.player = plugin.getActivityManager().getPlayer();
         teleportPlayerToStart();
         assignCraftingTask(player);
         startStopwatch();
