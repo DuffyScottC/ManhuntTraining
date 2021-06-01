@@ -7,14 +7,13 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
 
 public class BoundingBoxVisualizer {
 
     private int particleTaskId;
     private final Main plugin;
     private final double INCREMENT = 1;
-    private final double MARGIN = .001;
+    private final double MARGIN = .0001;
     
     private BoundingBox boundingBox;
     
