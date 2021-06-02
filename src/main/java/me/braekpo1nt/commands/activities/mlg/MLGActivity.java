@@ -6,14 +6,13 @@ import me.braekpo1nt.commands.activities.mlg.configurers.MLGChunkConfigurer;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGStartLocationConfigurer;
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class MLGActivity extends ConfigurableActivity implements Activity {
     
@@ -25,8 +24,8 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     private GameMode oldGamemode;
     private boolean active = false;
     
-    private BlockVector startLocation;
     private Chunk chunk;
+    private final int HEIGHT_LIMIT = 10;
     
     public MLGActivity(Main plugin) {
         this.plugin = plugin;
@@ -39,12 +38,6 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     @Override
     public void start() {
         this.player = plugin.getActivityManager().getPlayer();
-        Vector startLocationConf = plugin.getConfig().getVector(this.START_LOCATION);
-        if (startLocationConf == null || !(startLocationConf instanceof BlockVector)) {
-            player.sendMessage("Start location has not been set.");
-            return;
-        }
-        this.startLocation = (BlockVector) startLocationConf;
         Vector chunkVectorConf = plugin.getConfig().getVector(this.CHUNK);
         if (chunkVectorConf == null || !(chunkVectorConf instanceof BlockVector)) {
             player.sendMessage("Chunk has not been set.");
@@ -66,7 +59,27 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     }
 
     private void teleportPlayerToStart() {
-        this.player.teleport(startLocation.toLocation(this.player.getWorld(), 0, 90));
+        Location startLocation = getRandomStartLocation();
+        this.player.teleport(startLocation);
+    }
+
+    /**
+     * Returns a random start location within the chunk. It will always be at least as high as HEIGHT_LIMIT blocks
+     * above the block directly below the start position
+     * @return a random start location in the chunk
+     */
+    private Location getRandomStartLocation() {
+        // pitch=0,yaw=90
+        Random random = new Random();
+        // Pick a position
+        double x = random.nextInt(14) + random.nextDouble();
+        double z = random.nextInt(14) + random.nextDouble();
+        // Find the ground
+        boolean isAir = true;
+        int groundBlockY = 255;
+        while (isAir) {
+            chunk.getBlock(x, groundBlockY, z);
+        }
     }
 
     private void assignMLG() {
