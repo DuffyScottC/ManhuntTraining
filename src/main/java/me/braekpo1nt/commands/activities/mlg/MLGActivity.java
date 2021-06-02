@@ -7,6 +7,7 @@ import me.braekpo1nt.commands.activities.mlg.configurers.MLGStartLocationConfigu
 import me.braekpo1nt.commands.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
@@ -16,6 +17,7 @@ import java.util.Random;
 
 public class MLGActivity extends ConfigurableActivity implements Activity {
     
+    @Deprecated
     public static final String START_LOCATION = "mlg.start-location";
     public static final String CHUNK = "mlg.chunk";
 
@@ -25,7 +27,8 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     private boolean active = false;
     
     private Chunk chunk;
-    private final int HEIGHT_LIMIT = 10;
+    private final int LOWEST_HEIGHT = 10;
+    private final int HIGHEST_HEIGHT = 100;
     
     public MLGActivity(Main plugin) {
         this.plugin = plugin;
@@ -38,7 +41,7 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     @Override
     public void start() {
         this.player = plugin.getActivityManager().getPlayer();
-        Vector chunkVectorConf = plugin.getConfig().getVector(this.CHUNK);
+        Vector chunkVectorConf = plugin.getConfig().getVector(CHUNK);
         if (chunkVectorConf == null || !(chunkVectorConf instanceof BlockVector)) {
             player.sendMessage("Chunk has not been set.");
             return;
@@ -64,22 +67,33 @@ public class MLGActivity extends ConfigurableActivity implements Activity {
     }
 
     /**
-     * Returns a random start location within the chunk. It will always be at least as high as HEIGHT_LIMIT blocks
-     * above the block directly below the start position
+     * Returns a random start location within the chunk. It will always be at least as high as 
+     * LOWEST_HEIGHT blocks above the block directly below the x,z position
      * @return a random start location in the chunk
      */
     private Location getRandomStartLocation() {
         // pitch=0,yaw=90
         Random random = new Random();
         // Pick a position
-        double x = random.nextInt(14) + random.nextDouble();
-        double z = random.nextInt(14) + random.nextDouble();
+        int x = random.nextInt(14);
+        int z = random.nextInt(14);
         // Find the ground
         boolean isAir = true;
-        int groundBlockY = 255;
+        int groundY = chunk.getWorld().getMaxHeight() - 1;
         while (isAir) {
-            chunk.getBlock(x, groundBlockY, z);
+            isAir = chunk.getBlock(x, groundY, z).getType().isAir();
+            groundY--;
+            //edge case for if there are 0 non-air blocks
+            if (groundY < chunk.getWorld().getMinHeight()) {
+                isAir = false;
+                groundY = chunk.getWorld().getMaxHeight() - 1;
+            }
         }
+        // pick a y
+        int y = groundY + (LOWEST_HEIGHT + random.nextInt(HIGHEST_HEIGHT - LOWEST_HEIGHT));
+        // create the location
+        Block block = chunk.getBlock(x, y, z);
+        return block.getLocation().add(new Vector(random.nextFloat(), random.nextFloat(), random.nextFloat()));
     }
 
     private void assignMLG() {
