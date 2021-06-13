@@ -1,12 +1,10 @@
 package me.braekpo1nt.commands.activities.speedbridge;
 
-import me.braekpo1nt.commands.activities.ActivityManager;
-import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
+import me.braekpo1nt.commands.activities.abstracts.activities.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeBridgeAreaConfigurer;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeFinishAreaConfigurer;
 import me.braekpo1nt.commands.activities.speedbridge.configurers.SpeedBridgeStartLocationConfigurer;
-import me.braekpo1nt.commands.interfaces.Activity;
-import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
+import me.braekpo1nt.commands.activities.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import me.braekpo1nt.visualizers.BoundingBoxVisualizer;
 import org.bukkit.GameMode;
@@ -18,8 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-
-import java.util.*;
 
 public class SpeedBridgeActivity extends ConfigurableActivity implements Activity {
     

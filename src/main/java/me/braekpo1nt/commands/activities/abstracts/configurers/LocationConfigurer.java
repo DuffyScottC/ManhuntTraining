@@ -1,10 +1,8 @@
 package me.braekpo1nt.commands.activities.abstracts.configurers;
 
-import me.braekpo1nt.commands.activities.speedbridge.SpeedBridgeActivity;
-import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
+import me.braekpo1nt.commands.activities.interfaces.ActivityConfigurer;
 import me.braekpo1nt.manhunttraining.Main;
 import me.braekpo1nt.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

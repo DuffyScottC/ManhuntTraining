@@ -1,10 +1,9 @@
 package me.braekpo1nt.commands.activities.crafting;
 
-import me.braekpo1nt.commands.activities.ActivityManager;
-import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
+import me.braekpo1nt.commands.activities.abstracts.activities.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingStartLocationConfigurer;
 import me.braekpo1nt.commands.activities.crafting.configurers.CraftingTableLocationConfigurer;
-import me.braekpo1nt.commands.interfaces.Activity;
+import me.braekpo1nt.commands.activities.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

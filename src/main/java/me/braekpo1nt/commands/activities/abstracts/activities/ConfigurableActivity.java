@@ -1,9 +1,8 @@
-package me.braekpo1nt.commands.activities.abstracts;
+package me.braekpo1nt.commands.activities.abstracts.activities;
 
-import me.braekpo1nt.commands.interfaces.Activity;
-import me.braekpo1nt.commands.interfaces.ActivityConfigurer;
-import me.braekpo1nt.commands.interfaces.Configurable;
-import org.bukkit.Bukkit;
+import me.braekpo1nt.commands.activities.interfaces.Activity;
+import me.braekpo1nt.commands.activities.interfaces.ActivityConfigurer;
+import me.braekpo1nt.commands.activities.interfaces.Configurable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 

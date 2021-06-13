@@ -1,7 +1,7 @@
 package me.braekpo1nt.commands.subcommands;
 
-import me.braekpo1nt.commands.interfaces.Activity;
-import me.braekpo1nt.commands.interfaces.Configurable;
+import me.braekpo1nt.commands.activities.interfaces.Activity;
+import me.braekpo1nt.commands.activities.interfaces.Configurable;
 import me.braekpo1nt.commands.interfaces.SubTabCommand;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.command.Command;

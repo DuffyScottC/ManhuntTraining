@@ -1,4 +1,4 @@
-package me.braekpo1nt.commands.interfaces;
+package me.braekpo1nt.commands.activities.interfaces;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

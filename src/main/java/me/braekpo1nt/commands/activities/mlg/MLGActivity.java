@@ -1,10 +1,9 @@
 package me.braekpo1nt.commands.activities.mlg;
 
-import me.braekpo1nt.commands.activities.ActivityManager;
-import me.braekpo1nt.commands.activities.abstracts.ConfigurableActivity;
+import me.braekpo1nt.commands.activities.abstracts.activities.ConfigurableActivity;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGChunkConfigurer;
 import me.braekpo1nt.commands.activities.mlg.configurers.MLGStartLocationConfigurer;
-import me.braekpo1nt.commands.interfaces.Activity;
+import me.braekpo1nt.commands.activities.interfaces.Activity;
 import me.braekpo1nt.manhunttraining.Main;
 import org.bukkit.*;
 import org.bukkit.block.Block;
