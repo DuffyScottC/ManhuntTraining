@@ -24,7 +24,7 @@ public class ConfirmationListener implements Listener {
      * @param confirmMat The material that should indicate a confirm command
      * @param declineMat The material that should indicate a decline command
      */
-    public  ConfirmationListener(Confirmable confirmable, Material confirmMat, Material declineMat) {
+    public ConfirmationListener(Confirmable confirmable, Material confirmMat, Material declineMat) {
         this.confirmable = confirmable;
         this.confirmMat = confirmMat;
         this.declineMat = declineMat;
@@ -32,7 +32,7 @@ public class ConfirmationListener implements Listener {
     
     @EventHandler
     public void clickListener(PlayerInteractEvent event) {
-        if (confirmable.isActive()) {
+        if (confirmable.isConfirming()) {
             Material mat = event.getItem().getType();
             if (mat == confirmMat) {
                 event.setCancelled(true);

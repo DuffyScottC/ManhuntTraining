@@ -50,7 +50,7 @@ public class SpeedBridgeActivity extends ConfigurableActivity implements Activit
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(new SpeedBridgeListener(this), plugin);
         
-        boundingBoxVisualizer = new BoundingBoxVisualizer(plugin);
+        this.boundingBoxVisualizer = new BoundingBoxVisualizer(plugin);
         
         // Add new ActivityConfigurer objects here
         configurers.put("bridgearea", new SpeedBridgeBridgeAreaConfigurer(plugin));

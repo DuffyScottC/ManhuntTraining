@@ -6,6 +6,6 @@ public interface Confirmable {
     
     public void decline();
     
-    public boolean isActive();
+    public boolean isConfirming();
     
 }
