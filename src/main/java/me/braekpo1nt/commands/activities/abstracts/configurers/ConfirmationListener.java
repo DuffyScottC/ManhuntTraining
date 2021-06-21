@@ -32,6 +32,7 @@ public class ConfirmationListener implements Listener {
     
     @EventHandler
     public void clickListener(PlayerInteractEvent event) {
+        event.getPlayer().sendMessage("clickListener");
         if (confirmable.isConfirming()) {
             Material mat = event.getItem().getType();
             if (mat == confirmMat) {

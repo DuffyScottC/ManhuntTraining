@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.BoundingBox;
@@ -46,9 +45,13 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
      * confirming their selection
      */
     private ItemStack[] inventoryContents;
+    /**
+     * The player who is confirming the area.
+     */
+    private Player player;
 
     public AreaConfigurer(Main plugin) {
-        new ConfirmationListener(this);
+        new ConfirmationListener(this, confirmMat, declineMat);
         this.plugin = plugin;
         this.boundingBoxVisualizer = new BoundingBoxVisualizer(plugin);
     }
@@ -70,11 +73,11 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
                 return false;
             }
 
-            BoundingBox newArea = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
+            this.area = new BoundingBox(start.getBlockX(), start.getBlockY(), start.getBlockZ(), end.getBlockX(), end.getBlockY(), end.getBlockZ());
             
-            this.area = newArea;
             if (sender instanceof Player) {
-                initiateConfirm((Player) sender);
+                player = (Player) sender; 
+                initiateConfirm();
             } else {
                 confirm();
             }
@@ -87,8 +90,8 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
         }
     }
     
-    protected void setArea(BoundingBox area) {
-        plugin.getConfig().set(this.getConfigString(), area);
+    protected void setArea() {
+        plugin.getConfig().set(this.getConfigString(), this.area);
         plugin.saveConfig();
     }
 
@@ -127,8 +130,7 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
     // Confirmable
     //============
     
-    private void initiateConfirm(Player player) {
-        
+    private void initiateConfirm() {
         inventoryContents = player.getInventory().getContents();
         player.getInventory().clear();
         player.getInventory().addItem(new ItemStack(confirmMat), new ItemStack(declineMat));
@@ -138,19 +140,31 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
         boundingBoxVisualizer.show(player);
     }
     
-    private void restoreInventory(Player player) {
+    private void tearDownConfirm() {
+        boundingBoxVisualizer.hide();
+        area = null;
+        confirming = false;
+        inventoryContents = null;
+        player = null;
+        restoreInventory();
+    }
+    
+    private void restoreInventory() {
         player.getInventory().clear();
         player.getInventory().addItem(inventoryContents);
     }
     
     @Override
     public void confirm() {
-        
+        player.sendMessage("Confirmed.");
+        tearDownConfirm(); 
+        setArea();
     }
     
     @Override
     public void decline() {
-        
+        player.sendMessage("Decline.");
+        tearDownConfirm();
     }
     
     @Override
