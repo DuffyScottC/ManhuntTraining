@@ -162,8 +162,8 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
     @Override
     public void confirm() {
         player.sendMessage("Confirmed.");
-        tearDownConfirm(); 
         setArea();
+        tearDownConfirm(); 
     }
     
     @Override
