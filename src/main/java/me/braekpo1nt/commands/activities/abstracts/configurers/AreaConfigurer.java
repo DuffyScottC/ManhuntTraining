@@ -51,7 +51,7 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
     private Player player;
 
     public AreaConfigurer(Main plugin) {
-        new ConfirmationListener(this, confirmMat, declineMat);
+        plugin.getServer().getPluginManager().registerEvents(new ConfirmationListener(this, confirmMat, declineMat), plugin);
         this.plugin = plugin;
         this.boundingBoxVisualizer = new BoundingBoxVisualizer(plugin);
     }
@@ -142,16 +142,21 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
     
     private void tearDownConfirm() {
         boundingBoxVisualizer.hide();
+        restoreInventory();
         area = null;
         confirming = false;
-        inventoryContents = null;
         player = null;
-        restoreInventory();
     }
-    
+
+    /**
+     * Returns the player's inventory to the way it was
+     * before the Confirmation (when we replaced it with
+     * the confirm or decline items). 
+     */
     private void restoreInventory() {
         player.getInventory().clear();
-        player.getInventory().addItem(inventoryContents);
+        player.getInventory().setContents(inventoryContents);
+        inventoryContents = null;
     }
     
     @Override
