@@ -129,17 +129,21 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
     //============
     // Confirmable
     //============
-    
+
+    /**
+     * Initializes everything for the confirm
+     */
     private void initiateConfirm() {
-        inventoryContents = player.getInventory().getContents();
-        player.getInventory().clear();
-        player.getInventory().addItem(new ItemStack(confirmMat), new ItemStack(declineMat));
+        saveAndReplaceInventory();
         player.sendMessage("Confirm the area...");
         confirming = true;
         boundingBoxVisualizer.setBoundingBox(this.area);
         boundingBoxVisualizer.show(player);
     }
-    
+
+    /**
+     * Resets everything that was set for the confirmation
+     */
     private void tearDownConfirm() {
         boundingBoxVisualizer.hide();
         restoreInventory();
@@ -147,7 +151,17 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
         confirming = false;
         player = null;
     }
-
+    
+    /**
+     * Saves the inventory of the player, then
+     * replaces it with the confirm and decline items.
+     */
+    private void saveAndReplaceInventory() {
+        inventoryContents = player.getInventory().getContents();
+        player.getInventory().clear();
+        player.getInventory().addItem(new ItemStack(confirmMat), new ItemStack(declineMat));
+    }
+    
     /**
      * Returns the player's inventory to the way it was
      * before the Confirmation (when we replaced it with
