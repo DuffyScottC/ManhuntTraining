@@ -23,6 +23,7 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
     //=============
     // Confirmable
     //=============
+    // ------------------common
     private final Material confirmMat = Material.GREEN_DYE;
     private final Material declineMat = Material.RED_DYE;
     /**
@@ -30,6 +31,16 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
      * of the chosen area
      */
     private boolean confirming = false;
+    /**
+     * The player's inventory to be stored while the player
+     * confirming their selection
+     */
+    private ItemStack[] inventoryContents;
+    /**
+     * The player who is confirming the area.
+     */
+    private Player player;
+    // ------------------unique
     /**
      * Displays the selected area to the player and allows them to
      * visualize the area before confirming their choice.
@@ -40,15 +51,6 @@ public abstract class AreaConfigurer implements ActivityConfigurer, Confirmable 
      * then saved as the new area.
      */
     private BoundingBox area;
-    /**
-     * The player's inventory to be stored while the player
-     * confirming their selection
-     */
-    private ItemStack[] inventoryContents;
-    /**
-     * The player who is confirming the area.
-     */
-    private Player player;
 
     public AreaConfigurer(Main plugin) {
         plugin.getServer().getPluginManager().registerEvents(new ConfirmationListener(this, confirmMat, declineMat), plugin);

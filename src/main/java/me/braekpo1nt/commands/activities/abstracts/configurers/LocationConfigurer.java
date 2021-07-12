@@ -3,9 +3,11 @@ package me.braekpo1nt.commands.activities.abstracts.configurers;
 import me.braekpo1nt.commands.activities.interfaces.ActivityConfigurer;
 import me.braekpo1nt.manhunttraining.Main;
 import me.braekpo1nt.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockVector;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public abstract class LocationConfigurer implements ActivityConfigurer {
     public LocationConfigurer(Main plugin) {
         this.plugin = plugin;
     }
-
+    
     protected abstract String getConfigString();
     
     @Override
