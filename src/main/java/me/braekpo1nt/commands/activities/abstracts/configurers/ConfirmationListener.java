@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Accepts a {@link Confirmable}. Listens for a player clicking confirm or decline,
@@ -34,13 +35,16 @@ public class ConfirmationListener implements Listener {
     @EventHandler
     public void clickListener(PlayerInteractEvent event) {
         if (confirmable.isConfirming()) {
-            Material mat = event.getItem().getType();
-            if (mat == confirmMat) {
-                event.setCancelled(true);
-                confirmable.confirm();
-            } else if (mat == declineMat) {
-                event.setCancelled(true);
-                confirmable.decline();
+            ItemStack item = event.getItem();
+            if (item != null) {
+                Material mat = item.getType();
+                if (mat == confirmMat) {
+                    event.setCancelled(true);
+                    confirmable.confirm();
+                } else if (mat == declineMat) {
+                    event.setCancelled(true);
+                    confirmable.decline();
+                }
             }
         }
     }

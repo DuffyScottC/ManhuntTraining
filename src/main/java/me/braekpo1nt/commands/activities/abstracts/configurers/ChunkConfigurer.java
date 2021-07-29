@@ -62,16 +62,10 @@ public abstract class ChunkConfigurer implements ActivityConfigurer, Confirmable
     public boolean onConfigure(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             if (sender instanceof Player) {
-                Player player = (Player) sender;
+                this.player = (Player) sender;
                 Chunk chunk = player.getLocation().getChunk();
                 this.chunkVector = new BlockVector(chunk.getX(), 0, chunk.getZ());
-                
-                if (sender instanceof Player) {
-                    player = (Player) sender;
-                    initiateConfirm();
-                } else {
-                    confirm();
-                }
+                initiateConfirm();
                 
                 return true;
             } else {
@@ -93,7 +87,7 @@ public abstract class ChunkConfigurer implements ActivityConfigurer, Confirmable
                     this.chunkVector = new BlockVector(chunk.getX(), 0, chunk.getZ());
                     
                     if (sender instanceof Player) {
-                        player = (Player) sender;
+                        this.player = (Player) sender;
                         initiateConfirm();
                     } else {
                         confirm();
