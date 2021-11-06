@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -52,12 +53,14 @@ public class TrainCommandManager implements CommandManager {
      * @param command
      * @param alias
      * @param args
-     * @return The list of this CommandManager's SubCommand names
+     * @return The list of this CommandManager's SubCommand names or its subCommands'
+     * onTabComplete() methods
      */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
             List<String> subCommandNames = new ArrayList<>(subCommands.keySet());
+            subCommandNames.sort(Comparator.naturalOrder());
             return subCommandNames;
         } else if (args.length > 1) {
             // return the arguments of the subcommand, if any exist

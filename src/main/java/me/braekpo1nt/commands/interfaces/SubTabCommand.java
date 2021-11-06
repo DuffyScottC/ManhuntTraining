@@ -1,7 +1,10 @@
 package me.braekpo1nt.commands.interfaces;
 
 import org.bukkit.command.TabCompleter;
-import org.bukkit.command.TabExecutor;
 
+/**
+ * A convenience interface that extends the SubCommand and the TabCompleter
+ * interfaces
+ */
 public interface SubTabCommand extends SubCommand, TabCompleter {
 }
